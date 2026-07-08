@@ -1,0 +1,37 @@
+@import 'tailwindcss';
+@import '@skeletonlabs/skeleton/themes/hamlindigo';
+@import '@skeletonlabs/skeleton';
+
+/* Theme customization */
+@theme {
+	--font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* PWA install prompt styling */
+.pwa-install-banner {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 9999;
+	padding: 1rem;
+	background: var(--color-surface-100-800-token);
+	border-top: 2px solid var(--color-primary-500);
+}
+
+/* Mobile-safe areas */
+.safe-bottom {
+	padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+	width: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--color-surface-400);
+	border-radius: 3px;
+}
