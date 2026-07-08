@@ -40,8 +40,8 @@
 - [x] **PWA Configuration** — manifest.json, service worker (sw.js), icons, apple-touch-icon, SW registration in app.html
 - [x] **AE Assignment Management Page** — `/admin/ae` - IPP/OPD toggle per day with month navigation
 - [x] **Preselection Page** — `/admin/preselections` - add/remove staff locks with date/slot/employee picker
-- [ ] **Phase Configuration Page** — Admin sets phase dates and slot quotas (Phase 1: 1 Weekend + 2 Weekday, etc.)
-- [ ] **Phase-Aware Slot Claiming** — Staff selection page doesn't enforce phase quotas per staff.
+- [x] **Phase Configuration Page** — `/admin/phases` - edit dates and weekend/weekday quotas per phase (3 phases)
+- [x] **Phase-Aware Slot Claiming** — `/staff/selection` shows current phase info, enforces quotas, `/api/roster/claim` validates server-side
 - [x] **Charts Page** — `/admin/charts` - hours bar chart, AE/PH counts table, summary cards. `/staff/summary` - personal stats.
 - [x] **Copy Roster View/Edit Page** — `/admin/roster/edit` - table with Edit button per slot, modal to swap employees
 - [x] **Audit Log View Page** — `/admin/logs` - filterable by date, shows action/dates/slot/old-new employee
@@ -58,9 +58,9 @@
 - [ ] Skeleton DataTable for staff management and logs
 - [ ] Skeleton Toast notifications
 - [ ] Skeleton Modal confirmations
-- [ ] Excel Template Fidelity — missing signature footer, precise column widths
+- [x] Excel Template Fidelity — signature footer added (DISEDIAKAN OLEH / DI LULUSKAN OLEH)
 - [ ] POST-AE auto-sync when AE slot changed on copy roster
-- [ ] Archive Loading — solver archive param hardcoded to empty array
+- [x] Archive Loading — solver loads previous month AE slots for 10-day gap checking
 
 ---
 
@@ -68,9 +68,9 @@
 
 - [ ] Solver Strategy C (Fallback)
 - [ ] Skeleton Calendar Component (uses custom grid)
-- [ ] Copyright Page (admin and staff)
-- [ ] Eligibility Log Page UI
-- [ ] Login page uses Svelte 4 `on:submit|preventDefault` syntax
+- [x] Copyright Page — `/admin/copyright` and `/staff/copyright`
+- [x] Eligibility Log Page — `/admin/eligibility` with unfilled slots and employee hours
+- [x] Login page — fixed to Svelte 5 `onsubmit` syntax
 
 ---
 

@@ -21,7 +21,9 @@
 		{ href: '/admin/roster', icon: '📅', label: 'Jadual OT' },
 		{ href: '/admin/charts', icon: '📈', label: 'Carta' },
 		{ href: '/admin/logs', icon: '📋', label: 'Log Audit' },
+		{ href: '/admin/eligibility', icon: '✅', label: 'Kelayakan' },
 		{ href: '/admin/config', icon: '⚙️', label: 'Tetapan' },
+		{ href: '/admin/copyright', icon: '©️', label: 'Hak Cipta' },
 	];
 </script>
 

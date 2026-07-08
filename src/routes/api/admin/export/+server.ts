@@ -225,6 +225,28 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 		]);
 	}
 
+	// Footer section
+	ws.addRow([]);
+	const footerRow1 = ws.addRow(['DISEDIAKAN OLEH :', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'DI LULUSKAN OLEH:', '', '']);
+	ws.mergeCells(`A${footerRow1.number}:D${footerRow1.number}`);
+	ws.mergeCells(`T${footerRow1.number}:V${footerRow1.number}`);
+	footerRow1.getCell(1).font = { bold: true, size: 10 };
+	footerRow1.getCell(20).font = { bold: true, size: 10 };
+
+	const footerRow2 = ws.addRow(['SELYVESTER @ JULKARNAIN KUNDIAN', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'VICTOR LIM', '', '']);
+	ws.mergeCells(`A${footerRow2.number}:D${footerRow2.number}`);
+	ws.mergeCells(`T${footerRow2.number}:V${footerRow2.number}`);
+
+	const footerRow3 = ws.addRow(['Ketua Penolong Pegawai Farmasi', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', 'Ketua Jabatan Farmasi', '', '']);
+	ws.mergeCells(`A${footerRow3.number}:D${footerRow3.number}`);
+	ws.mergeCells(`T${footerRow3.number}:V${footerRow3.number}`);
+	footerRow3.getCell(1).font = { italic: true, size: 9 };
+	footerRow3.getCell(20).font = { italic: true, size: 9 };
+
+	const footerRow4 = ws.addRow(['26.02.2026', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '26.02.2026', '', '']);
+	ws.mergeCells(`A${footerRow4.number}:D${footerRow4.number}`);
+	ws.mergeCells(`T${footerRow4.number}:V${footerRow4.number}`);
+
 	// Generate buffer
 	const buffer = await workbook.xlsx.writeBuffer();
 

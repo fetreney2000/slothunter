@@ -48,6 +48,17 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const config = await Config.findOne().lean();
 	const defaultMaxHours = (config as unknown as { defaultMaxHours?: number })?.defaultMaxHours || 40;
 
+	// Load archive from previous month
+	const prevMonthDate = new Date(month + 'T00:00:00');
+	prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
+	const prevMonth = prevMonthDate.toISOString().slice(0, 7) + '-01';
+	const prevRoster = await Roster.findOne({ month: prevMonth, isCopy: false }).sort({ generatedAt: -1 }).lean();
+	let archive: { date: string; slotType: string; employeeId: string; hours: number }[] = [];
+	if (prevRoster) {
+		const prevSlots = await RosterSlot.find({ rosterId: (prevRoster as unknown as { rosterId: string }).rosterId, slotType: 'AE' }).lean();
+		archive = prevSlots.map(s => ({ date: s.date, slotType: s.slotType, employeeId: s.employeeId, hours: s.hours }));
+	}
+
 	return json({
 		solverInput: {
 			employees: employees.map((e) => ({
@@ -74,7 +85,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 				employeeId: p.employeeId
 			})),
 			unavailability: unavailMap,
-			archive: [], // TODO: load from previous month
+			archive,
 			config: { defaultMaxHours },
 			searchStepLimit
 		}
