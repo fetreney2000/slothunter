@@ -18,6 +18,7 @@
 		{ href: '/admin/ae', icon: '🚑', label: 'AE Jabatan' },
 		{ href: '/admin/preselections', icon: '📌', label: 'Pra-Pilihan' },
 		{ href: '/admin/roster', icon: '📅', label: 'Jadual OT' },
+		{ href: '/admin/charts', icon: '📈', label: 'Carta' },
 		{ href: '/admin/logs', icon: '📋', label: 'Log Audit' },
 		{ href: '/admin/config', icon: '⚙️', label: 'Tetapan' },
 	];

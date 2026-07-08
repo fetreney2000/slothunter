@@ -38,15 +38,15 @@
 ## ❌ NOT IMPLEMENTED — HIGH PRIORITY
 
 - [ ] **PWA Configuration** — `@vite-pwa/sveltekit` in package.json but NOT configured. No manifest, no service worker.
-- [ ] **AE Assignment Management Page** — Admin needs UI to set which dept (IPP/OPD) works AE each day.
-- [ ] **Preselection Page** — Admin needs UI to manually lock staff into specific slots before solver.
+- [x] **AE Assignment Management Page** — `/admin/ae` - IPP/OPD toggle per day with month navigation
+- [x] **Preselection Page** — `/admin/preselections` - add/remove staff locks with date/slot/employee picker
 - [ ] **Phase Configuration Page** — Admin sets phase dates and slot quotas (Phase 1: 1 Weekend + 2 Weekday, etc.)
 - [ ] **Phase-Aware Slot Claiming** — Staff selection page doesn't enforce phase quotas per staff.
-- [ ] **Charts Page** — Admin: OT hours, AE counts, PH counts, payment charts. Staff: own data only.
+- [x] **Charts Page** — `/admin/charts` - hours bar chart, AE/PH counts table, summary cards. `/staff/summary` - personal stats.
 - [ ] **Copy Roster View/Edit Page** — API exists for creating copy, but no UI page for viewing/editing.
-- [ ] **Audit Log View Page** — No page to display RosterLog entries.
-- [ ] **Roster Status Management UI** — No UI for admin to advance Draft→Phase1→Phase2→Phase3→Final.
-- [ ] **Excel Export Button in UI** — API exists but no download button on roster pages.
+- [x] **Audit Log View Page** — `/admin/logs` - filterable by date, shows action/dates/slot/old-new employee
+- [x] **Roster Status Management UI** — `/admin/roster` - buttons for Draft→Phase1→Phase2→Phase3→Final, copy roster button
+- [x] **Excel Export Button in UI** — Excel button on admin roster page and staff roster page
 - [ ] **Roster Slot Editing UI** — Admin needs to edit individual slots (swap employees) on roster.
 
 ---
