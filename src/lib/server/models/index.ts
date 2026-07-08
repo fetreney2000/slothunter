@@ -8,3 +8,4 @@ export { Preselection } from './Preselection';
 export { Roster } from './Roster';
 export { RosterSlot } from './RosterSlot';
 export { RosterLog } from './RosterLog';
+export { PhaseConfig } from './PhaseConfig';
