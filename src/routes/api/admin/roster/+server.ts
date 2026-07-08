@@ -103,6 +103,37 @@ export const PUT: RequestHandler = async ({ locals, request }) => {
 		if (newHours !== undefined) slot.hours = newHours;
 		await slot.save();
 
+		// POST-AE auto-sync: if AE slot changed, update POST-AE for next day
+		if (slotType === 'AE') {
+			const d = new Date(date + 'T00:00:00');
+			d.setDate(d.getDate() + 1);
+			const nextDate = d.toISOString().split('T')[0];
+			const postAESlot = await RosterSlot.findOne({ rosterId, date: nextDate, slotType: 'POST-AE' });
+			if (postAESlot) {
+				const oldPostEmp = postAESlot.employeeId;
+				postAESlot.employeeId = newEmployeeId || '';
+				postAESlot.employeeName = newEmployeeName || '';
+				postAESlot.dept = newDept || slot.dept;
+				postAESlot.role = newRole || slot.role;
+				await postAESlot.save();
+
+				await RosterLog.create({
+					rosterId,
+					changedAt: new Date(),
+					changedBy: { email: locals.user.email, name: locals.user.name, role: locals.user.role },
+					date: nextDate,
+					slot: 'POST-AE',
+					oldEmployeeId: oldPostEmp,
+					oldEmployeeName: '',
+					oldDept: '', oldRole: '', oldHours: 0,
+					newEmployeeId: newEmployeeId || '',
+					newEmployeeName: newEmployeeName || '',
+					newDept: newDept || '', newRole: newRole || 'PPF', newHours: 0,
+					action: 'SYNC_POST_AE'
+				});
+			}
+		}
+
 		return json({ success: true, slot });
 	}
 

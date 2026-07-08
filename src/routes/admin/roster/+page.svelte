@@ -6,6 +6,7 @@
 	let result = $state<Record<string, unknown> | null>(null);
 	let error = $state('');
 	let searchStepLimit = $state(100000);
+	let solverMode = $state('all'); // 'all', 'ae_holidays', 'cleanup'
 	let rosterStatus = $state('');
 	let rosterId = $state('');
 	let slots = $state<Array<Record<string, unknown>>>([]);
@@ -17,7 +18,7 @@
 			const inputRes = await fetch('/api/admin/solver', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ month, searchStepLimit })
+			body: JSON.stringify({ month, searchStepLimit, solverMode })
 			});
 			if (!inputRes.ok) { error = (await inputRes.json()).error || 'Gagal'; running = false; return; }
 			const { solverInput } = await inputRes.json();
@@ -90,8 +91,15 @@
 
 	<!-- Controls -->
 	<div class="card preset-tonal p-4 space-y-3">
-		<div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+		<div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
 			<label class="label"><span>Bulan</span><input type="date" class="input" bind:value={month} /></label>
+			<label class="label"><span>Mod Solver</span>
+				<select class="select" bind:value={solverMode}>
+					<option value="all">Semua Slot</option>
+					<option value="ae_holidays">AE & Cuti Sahaja</option>
+					<option value="cleanup">Baki (Cleanup)</option>
+				</select>
+			</label>
 			<label class="label"><span>Had Carian</span><input type="number" class="input" bind:value={searchStepLimit} min="10000" step="10000" /></label>
 			<div class="flex items-end gap-2">
 				<button class="btn preset-filled-primary-500 flex-1" onclick={runSolver} disabled={running}>

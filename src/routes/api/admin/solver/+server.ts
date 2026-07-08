@@ -16,6 +16,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 	const body = await request.json();
 	const month = body.month; // YYYY-MM-01
 	const searchStepLimit = body.searchStepLimit || 800000;
+	const solverMode = body.solverMode || 'all';
 
 	if (!month) {
 		return json({ error: 'Bulan diperlukan' }, { status: 400 });
@@ -87,7 +88,8 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 			unavailability: unavailMap,
 			archive,
 			config: { defaultMaxHours },
-			searchStepLimit
+			searchStepLimit,
+			solverMode
 		}
 	});
 };
