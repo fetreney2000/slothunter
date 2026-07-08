@@ -2,7 +2,7 @@ import type { Handle } from '@sveltejs/kit';
 import { verifyToken, getCookieName } from '$lib/server/auth';
 
 // Public routes that don't require authentication
-const PUBLIC_ROUTES = ['/', '/login', '/api/auth/login', '/api/health'];
+const PUBLIC_ROUTES = ['/', '/login', '/api/auth/login', '/api/health', '/api/seed'];
 
 // Admin-only routes
 const ADMIN_ROUTE_PREFIXES = ['/admin', '/api/admin'];
