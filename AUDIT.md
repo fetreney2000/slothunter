@@ -37,17 +37,17 @@
 
 ## ❌ NOT IMPLEMENTED — HIGH PRIORITY
 
-- [ ] **PWA Configuration** — `@vite-pwa/sveltekit` in package.json but NOT configured. No manifest, no service worker.
+- [x] **PWA Configuration** — manifest.json, service worker (sw.js), icons, apple-touch-icon, SW registration in app.html
 - [x] **AE Assignment Management Page** — `/admin/ae` - IPP/OPD toggle per day with month navigation
 - [x] **Preselection Page** — `/admin/preselections` - add/remove staff locks with date/slot/employee picker
 - [ ] **Phase Configuration Page** — Admin sets phase dates and slot quotas (Phase 1: 1 Weekend + 2 Weekday, etc.)
 - [ ] **Phase-Aware Slot Claiming** — Staff selection page doesn't enforce phase quotas per staff.
 - [x] **Charts Page** — `/admin/charts` - hours bar chart, AE/PH counts table, summary cards. `/staff/summary` - personal stats.
-- [ ] **Copy Roster View/Edit Page** — API exists for creating copy, but no UI page for viewing/editing.
+- [x] **Copy Roster View/Edit Page** — `/admin/roster/edit` - table with Edit button per slot, modal to swap employees
 - [x] **Audit Log View Page** — `/admin/logs` - filterable by date, shows action/dates/slot/old-new employee
 - [x] **Roster Status Management UI** — `/admin/roster` - buttons for Draft→Phase1→Phase2→Phase3→Final, copy roster button
 - [x] **Excel Export Button in UI** — Excel button on admin roster page and staff roster page
-- [ ] **Roster Slot Editing UI** — Admin needs to edit individual slots (swap employees) on roster.
+- [x] **Roster Slot Editing UI** — Edit button per slot opens modal with employee dropdown, saves via API with audit log
 
 ---
 
@@ -80,5 +80,5 @@
 - [ ] **Solver Strategies** — A works, B simplified, C missing
 - [ ] **Staff Selection** — Basic list exists, no phase quota enforcement
 - [ ] **Roster Management** — API has finalize/copy/updateSlot but no UI pages
-- [ ] **AppShell** — Uses basic div layout instead of Skeleton's `AppShell` component
+- [x] **AppShell** — Admin layout with sidebar nav + bottom nav. Staff layout with bottom nav.
 - [ ] **Data Density** — Admin dashboard is basic cards, not DataTable as specified

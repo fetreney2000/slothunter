@@ -149,6 +149,7 @@
 						onclick={() => setStatus(s)}>{s}</button>
 				{/each}
 				<button class="btn btn-sm preset-filled-tertiary-500" onclick={copyRoster}>📋 Salin Roster</button>
+				<a href="/admin/roster/edit" class="btn btn-sm preset-tonal-primary">✏️ Edit</a>
 				<a href="/admin/logs" class="btn btn-sm preset-tonal-surface">📋 Log</a>
 			</div>
 		</div>
