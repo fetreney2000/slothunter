@@ -65,10 +65,15 @@
 			<p class="text-sm opacity-60">Status: <span class="font-bold">{(rosterInfo as Record<string, unknown>).status || 'Tiada'}</span></p>
 			<p class="text-sm opacity-60">Jam Saya: <span class="font-bold">{myTotalHours}h</span> ({mySlots.length} slot)</p>
 		</div>
-		<select class="select w-auto" bind:value={month}>
-			<option value={new Date().toISOString().slice(0, 7) + '-01'}>Bulan Ini</option>
-			<option value={new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 7) + '-01'}>Bulan Lepas</option>
-		</select>
+		<div class="flex gap-2">
+			<select class="select w-auto" bind:value={month}>
+				<option value={new Date().toISOString().slice(0, 7) + '-01'}>Bulan Ini</option>
+				<option value={new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 7) + '-01'}>Bulan Lepas</option>
+			</select>
+			{#if slots.length > 0}
+				<a href="/api/admin/export?month={month}" target="_blank" class="btn preset-filled-success-500 btn-sm">📥 Excel</a>
+			{/if}
+		</div>
 	</div>
 
 	<!-- View toggle -->
