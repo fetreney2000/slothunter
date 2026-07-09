@@ -869,43 +869,190 @@ self.onmessage = function (e: MessageEvent<SolverInput>) {
 			}
 		}
 
-		self.postMessage({ type: 'progress', progress: 70, message: 'Menjalankan Strategi B (jika perlu)...' });
+		self.postMessage({ type: 'progress', progress: 70, message: 'Menjalankan Strategi B (Beam Search)...' });
 
-		// STRATEGY B: Check if unfilled
+		// STRATEGY B: Proper Beam Search with width=50
 		const unfilledCount = bestObjective?.unfilledCount ?? slots.length;
 		if (unfilledCount > 0 && stepCounter.steps < limit) {
-			// Beam search with width 50
-			// (Simplified: just re-run strategy A with more randomization)
-			for (let r = 0; r < 25; r++) {
+			const BEAM_WIDTH = 50;
+			const TOP_K = 3; // candidates per slot per beam
+
+			// Find unfilled slots from best solution so far
+			const unfilledSlots = slots.filter(s => !bestAssignments.has(`${s.date}:${s.slotType}`));
+
+			// Initialize beam with current best partial solution
+			interface BeamState {
+				assignments: Map<string, string>;
+				states: Map<string, EmployeeState>;
+				objective: ObjectiveScore;
+			}
+
+			const initialObjective = bestObjective || { unfilledCount: slots.length, hardPenalty: 0, exceedOneThirdCount: 0, roleHoursDeviation: 0, softPenalty: 0, assignedHours: 0, utilizationSpread: 0 };
+			let beam: BeamState[] = [{
+				assignments: new Map(bestAssignments),
+				states: cloneStates(bestStates),
+				objective: initialObjective
+			}];
+
+			for (const slot of unfilledSlots) {
 				if (stepCounter.steps >= limit) break;
-				const result = solveStrategy(
-					slots, employees, baseStates, input.holidays,
-					input.aeAssignments, unavailMap, archiveMap,
-					employeeMap, stepCounter, limit, r + 1
-				);
-				const merged = new Map([...preselected, ...result.assignments]);
-				const tempStates = initState(employees, input.unavailability);
-				for (const [key, empId] of merged) {
-					const [date, slotType] = key.split(':');
-					const emp = employeeMap.get(empId);
-					const st = tempStates.get(empId);
-					if (emp && st) {
-						const dayType = classifyDay(date, holidayDates);
-						const hours = slotType === 'AE'
-							? calcAEHours(date, dayType, input.holidays)
-							: (dayType === 'weekday' ? 4 : 7);
-						const slot: Slot = {
-							date, day: getDayName(date), dayType, slotType,
-							dept: emp.dept, role: emp.role, hours
-						};
-						applyAssignment(emp, slot, st, input.holidays, input.aeAssignments);
+
+				const expanded: BeamState[] = [];
+
+				for (const bs of beam) {
+					// Find eligible candidates for this slot
+					const eligible = employees.filter(emp => {
+						const s = bs.states.get(emp.employeeId)!;
+						const unavailSet = unavailMap.get(emp.employeeId) || new Set();
+						return isEligible(emp, slot, s, bs.states, input.holidays, input.aeAssignments, unavailSet, archiveMap);
+					});
+
+					stepCounter.steps++;
+
+					if (eligible.length === 0) {
+						// Keep beam with unfilled slot
+						expanded.push(bs);
+						continue;
+					}
+
+					const ranked = rankCandidates(eligible, bs.states, slot);
+					const topN = Math.min(TOP_K, ranked.length);
+
+					for (let i = 0; i < topN; i++) {
+						const chosen = ranked[i];
+						const newAssignments = new Map(bs.assignments);
+						const newStates = cloneStates(bs.states);
+						const empState = newStates.get(chosen.employeeId)!;
+						applyAssignment(chosen, slot, empState, input.holidays, input.aeAssignments);
+						newAssignments.set(`${slot.date}:${slot.slotType}`, chosen.employeeId);
+						expanded.push({
+							assignments: newAssignments,
+							states: newStates,
+							objective: bs.objective
+						});
 					}
 				}
-				const obj = computeObjective(postProcess(merged, input.month, input.holidays, input.aeAssignments, employeeMap), employees, input.month, tempStates);
-				if (!bestObjective || isBetterObjective(obj, bestObjective)) {
-					bestObjective = obj;
-					bestAssignments = merged;
-					bestStates = tempStates;
+
+				// Prune to best BEAM_WIDTH
+				expanded.sort((a, b) => {
+					const objA = computeObjective(
+						postProcess(new Map([...preselected, ...a.assignments]), input.month, input.holidays, input.aeAssignments, employeeMap),
+						employees, input.month, a.states
+					);
+					const objB = computeObjective(
+						postProcess(new Map([...preselected, ...b.assignments]), input.month, input.holidays, input.aeAssignments, employeeMap),
+						employees, input.month, b.states
+					);
+					return isBetterObjective(objA, objB) ? -1 : 1;
+				});
+
+				beam = expanded.slice(0, BEAM_WIDTH);
+
+				// Update global best
+				for (const bs of beam) {
+					const merged = new Map([...preselected, ...bs.assignments]);
+					const obj = computeObjective(
+						postProcess(merged, input.month, input.holidays, input.aeAssignments, employeeMap),
+						employees, input.month, bs.states
+					);
+					if (!bestObjective || isBetterObjective(obj, bestObjective)) {
+						bestObjective = obj;
+						bestAssignments = merged;
+						bestStates = bs.states;
+					}
+				}
+			}
+		}
+
+		self.postMessage({ type: 'progress', progress: 85, message: 'Menjalankan Strategi C (jika perlu)...' });
+
+		// STRATEGY C: Structured constructive with different orderings
+		if ((bestObjective?.unfilledCount ?? 0) > 0 && stepCounter.steps < limit) {
+			const cStrategies: SlotSorter[] = [
+				// C1: Weekend-first then weekday
+				(slots) => [...slots].sort((a, b) => {
+					const wa = a.dayType === 'saturday' || a.dayType === 'sunday' || a.dayType === 'holiday' ? 0 : 1;
+					const wb = b.dayType === 'saturday' || b.dayType === 'sunday' || b.dayType === 'holiday' ? 0 : 1;
+					if (wa !== wb) return wa - wb;
+					return a.date.localeCompare(b.date);
+				}),
+				// C2: OPD-first then IPP
+				(slots) => [...slots].sort((a, b) => {
+					if (a.slotType.startsWith('OPD_') && !b.slotType.startsWith('OPD_')) return -1;
+					if (!a.slotType.startsWith('OPD_') && b.slotType.startsWith('OPD_')) return 1;
+					return a.date.localeCompare(b.date);
+				}),
+				// C3: AE-first then rest
+				(slots) => [...slots].sort((a, b) => {
+					if (a.slotType === 'AE' && b.slotType !== 'AE') return -1;
+					if (a.slotType !== 'AE' && b.slotType === 'AE') return 1;
+					return a.date.localeCompare(b.date);
+				}),
+				// C4: PP slots first (most constrained roles)
+				(slots) => [...slots].sort((a, b) => {
+					const pa = a.slotType.startsWith('PP_') ? 0 : 1;
+					const pb = b.slotType.startsWith('PP_') ? 0 : 1;
+					if (pa !== pb) return pa - pb;
+					return a.date.localeCompare(b.date);
+				}),
+				// C5: Middle-out (day 15 outward)
+				(slots) => [...slots].sort((a, b) => {
+					const da = Math.abs(parseInt(a.date.split('-')[2]) - 15);
+					const db = Math.abs(parseInt(b.date.split('-')[2]) - 15);
+					return da - db;
+				}),
+				// C6: Random shuffle
+				(slots) => {
+					const arr = [...slots];
+					for (let i = arr.length - 1; i > 0; i--) {
+						const j = Math.floor(Math.random() * (i + 1));
+						[arr[i], arr[j]] = [arr[j], arr[i]];
+					}
+					return arr;
+				}
+			];
+
+			for (let s = 0; s < cStrategies.length; s++) {
+				for (let r = 0; r < 25; r++) {
+					if (stepCounter.steps >= limit) break;
+
+					const sorted = cStrategies[s](slots, employeeMap, baseStates);
+					const result = solveStrategy(
+						sorted, employees, baseStates, input.holidays,
+						input.aeAssignments, unavailMap, archiveMap,
+						employeeMap, stepCounter, limit, r
+					);
+
+					const merged = new Map([...preselected, ...result.assignments]);
+					const tempStates = initState(employees, input.unavailability);
+					for (const [key, empId] of merged) {
+						const [date, slotType] = key.split(':');
+						const emp = employeeMap.get(empId);
+						const st = tempStates.get(empId);
+						if (emp && st) {
+							const dayType = classifyDay(date, holidayDates);
+							const hours = slotType === 'AE'
+								? calcAEHours(date, dayType, input.holidays)
+								: (dayType === 'weekday' ? 4 : 7);
+							const slot: Slot = {
+								date, day: getDayName(date), dayType, slotType,
+								dept: emp.dept, role: emp.role, hours
+							};
+							applyAssignment(emp, slot, st, input.holidays, input.aeAssignments);
+						}
+					}
+
+					const obj = computeObjective(
+						postProcess(merged, input.month, input.holidays, input.aeAssignments, employeeMap),
+						employees, input.month, tempStates
+					);
+					if (!bestObjective || isBetterObjective(obj, bestObjective)) {
+						bestObjective = obj;
+						bestAssignments = merged;
+						bestStates = tempStates;
+					}
+
+					if (result.success) break;
 				}
 			}
 		}
