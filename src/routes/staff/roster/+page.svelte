@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import { exportRosterToExcel } from '$lib/exportRoster';
+	import MonthPicker from '$lib/components/MonthPicker.svelte';
 
 	let { data }: { data: PageData } = $props();
 
@@ -90,10 +91,7 @@
 			<p class="text-sm opacity-60">Jam Saya: <span class="font-bold">{myTotalHours}h</span> ({mySlots.length} slot)</p>
 		</div>
 		<div class="flex gap-2">
-			<select class="select w-auto" bind:value={month}>
-				<option value={new Date().toISOString().slice(0, 7) + '-01'}>Bulan Ini</option>
-				<option value={new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 7) + '-01'}>Bulan Lepas</option>
-			</select>
+			<MonthPicker bind:value={month} />
 			{#if slots.length > 0}
 				<button class="btn preset-filled-success-500 btn-sm" onclick={exportExcel}>📥 Excel</button>
 			{/if}

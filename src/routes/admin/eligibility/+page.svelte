@@ -1,4 +1,5 @@
 <script lang="ts">
+	import MonthPicker from '$lib/components/MonthPicker.svelte';
 	let month = $state(new Date().toISOString().slice(0, 7) + '-01');
 	let slots = $state<Array<Record<string, unknown>>>([]);
 	let employees = $state<Array<Record<string, unknown>>>([]);
@@ -41,10 +42,7 @@
 
 <div class="space-y-4">
 	<h1 class="h2">Log Kelayakan</h1>
-	<select class="select w-auto" bind:value={month}>
-		<option value={new Date().toISOString().slice(0, 7) + '-01'}>Bulan Ini</option>
-		<option value={new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 7) + '-01'}>Bulan Lepas</option>
-	</select>
+	<MonthPicker bind:value={month} />
 
 	{#if loading}
 		<p class="animate-pulse opacity-60 text-center p-4">Memuatkan...</p>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import MonthPicker from '$lib/components/MonthPicker.svelte';
 	let { data }: { data: PageData } = $props();
 
 	let month = $state(new Date().toISOString().slice(0, 7) + '-01');
@@ -141,10 +142,7 @@
 
 	<div class="flex items-center justify-between flex-wrap gap-2">
 		<p class="text-sm opacity-60">Status: <span class="font-bold">{rosterStatus || 'Tiada'}</span></p>
-		<select class="select w-auto" bind:value={month}>
-			<option value={new Date().toISOString().slice(0, 7) + '-01'}>Bulan Ini</option>
-			<option value={new Date(Date.now() + 30 * 86400000).toISOString().slice(0, 7) + '-01'}>Bulan Depan</option>
-		</select>
+		<MonthPicker bind:value={month} />
 	</div>
 
 	<!-- Phase Info -->
