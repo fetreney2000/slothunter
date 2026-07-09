@@ -70,7 +70,7 @@ export async function authenticateUser(
 
 export async function ensureAdminExists(): Promise<void> {
 	await connectDB();
-	const { ADMIN_EMAIL, ADMIN_PASSWORD } = await import(/* @vite-ignore */ '$lib/env');
+	const { ADMIN_EMAIL, ADMIN_PASSWORD } = await import('$lib/env');
 
 	const existing = await User.findOne({ email: ADMIN_EMAIL.toLowerCase() });
 	if (existing) return;

@@ -10,7 +10,8 @@ import {
 export const POST: RequestHandler = async ({ request }) => {
 	await connectDB();
 
-	const { action, secret } = await request.json();
+	const body = await request.json();
+	const { action, secret } = body;
 
 	// Simple protection - require a seed secret
 	if (secret !== 'slothunter-seed-2026') {
@@ -18,9 +19,33 @@ export const POST: RequestHandler = async ({ request }) => {
 	}
 
 	try {
-		if (action === 'admin' || action === 'all') {
-			await ensureAdminExists();
+	if (action === 'admin' || action === 'all') {
+		const adminEmail = body.adminEmail || 'otadmin@gmail.com';
+		const adminPassword = body.adminPassword || '1234';
+		const { hashPassword } = await import('$lib/server/auth');
+		const existing = await User.findOne({ email: adminEmail.toLowerCase() });
+		if (!existing) {
+			const hash = await hashPassword(adminPassword);
+			await User.create({
+				employeeId: 'ADMIN',
+				name: 'Pentadbir',
+				dept: 'OPD',
+				role: 'PPF',
+				email: adminEmail.toLowerCase(),
+				passwordHash: hash,
+				maxHoursPerMonth: 0,
+				active: true,
+				salary: 0,
+				annualAE: 0, annualHalfPaidAE: 0, annualPaidAE: 0, annualPHAE: 0, annualPH: 0,
+				userRole: 'Admin'
+			});
+		} else {
+			// Update password if admin already exists
+			const hash = await hashPassword(adminPassword);
+			existing.passwordHash = hash;
+			await existing.save();
 		}
+	}
 
 		if (action === 'employees' || action === 'all') {
 			await seedEmployees();
