@@ -11,17 +11,17 @@
 		onchange?: () => void;
 	} = $props();
 
-	// Ensure value always ends with -01 for first-of-month
-	function normalizeMonth(v: string): string {
+	// Normalize any date string to yyyy-mm-01 (first of month)
+	function toMonthFirst(v: string): string {
 		if (!v) return '';
-		const parts = v.split('-');
+		const parts = v.substring(0, 10).split('-');
 		if (parts.length >= 2) {
 			return `${parts[0]}-${parts[1].padStart(2, '0')}-01`;
 		}
 		return v;
 	}
 
-	let dpValue = $derived(value ? [parseDate(normalizeMonth(value).substring(0, 10))] : []);
+	let dpValue = $derived(value ? [parseDate(toMonthFirst(value))] : []);
 
 	function onValueChange(e: { value: Array<{ year: number; month: number; day: number }>; valueAsString: string[] }) {
 		if (e.value && e.value.length > 0) {
@@ -39,13 +39,6 @@
 		}
 		onchange?.();
 	}
-
-	// Display the month-year as readable text
-	const displayValue = $derived(() => {
-		if (!value) return '';
-		const d = new Date(normalizeMonth(value) + 'T00:00:00');
-		return d.toLocaleDateString('ms-MY', { month: 'long', year: 'numeric' });
-	});
 </script>
 
 <DatePicker value={dpValue} {onValueChange}>
@@ -59,6 +52,39 @@
 	<Portal>
 		<DatePicker.Positioner>
 			<DatePicker.Content>
+				<DatePicker.View view="day">
+					<DatePicker.Context>
+						{#snippet children(datePicker)}
+							<DatePicker.ViewControl>
+								<DatePicker.PrevTrigger />
+								<DatePicker.ViewTrigger>
+									<DatePicker.RangeText />
+								</DatePicker.ViewTrigger>
+								<DatePicker.NextTrigger />
+							</DatePicker.ViewControl>
+							<DatePicker.Table>
+								<DatePicker.TableHead>
+									<DatePicker.TableRow>
+										{#each datePicker().weekDays as weekDay, id (id)}
+											<DatePicker.TableHeader>{weekDay.short}</DatePicker.TableHeader>
+										{/each}
+									</DatePicker.TableRow>
+								</DatePicker.TableHead>
+								<DatePicker.TableBody>
+									{#each datePicker().weeks as week, id (id)}
+										<DatePicker.TableRow>
+											{#each week as day, id (id)}
+												<DatePicker.TableCell value={day}>
+													<DatePicker.TableCellTrigger>{day.day}</DatePicker.TableCellTrigger>
+												</DatePicker.TableCell>
+											{/each}
+										</DatePicker.TableRow>
+									{/each}
+								</DatePicker.TableBody>
+							</DatePicker.Table>
+						{/snippet}
+					</DatePicker.Context>
+				</DatePicker.View>
 				<DatePicker.View view="month">
 					<DatePicker.Context>
 						{#snippet children(datePicker)}

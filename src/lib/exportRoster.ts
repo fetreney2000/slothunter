@@ -201,7 +201,18 @@ export async function exportRosterToExcel(
 	row4.height = 45;
 
 	// ─── DATA ROWS (starting row 5) ──────────────────────────────
+	// First pass: collect POST-AE values by date so we can place them at D+1
+	const postAeByDate = new Map<string, string>();
+	for (const date of dates) {
+		const dateSlots = matrix.get(date);
+		if (dateSlots) {
+			const postAE = dateSlots.get('POST-AE') || '';
+			if (postAE) postAeByDate.set(date, postAE);
+		}
+	}
+
 	let rowNum = 5;
+	let prevPostAE = ''; // POST-AE from the previous date (for D+1 placement)
 	for (const date of dates) {
 		const dow = new Date(date + 'T00:00:00').getDay();
 		const isHoliday = holidayDates.has(date);
@@ -258,8 +269,11 @@ export async function exportRosterToExcel(
 		row.getCell(20).value = dateSlots.get('AE') || '';
 		// U column: always empty
 		row.getCell(21).value = '';
-		// V column: POST-AE
-		row.getCell(22).value = dateSlots.get('POST-AE') || '';
+		// V column: POST-AE from previous date (D+1 placement)
+		row.getCell(22).value = prevPostAE;
+
+		// Set up POST-AE for next row (D+1)
+		prevPostAE = postAeByDate.get(date) || '';
 
 		// Determine row fill color
 		let rowFill: string;
