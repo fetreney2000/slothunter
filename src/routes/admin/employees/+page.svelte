@@ -276,7 +276,7 @@
 <!-- Edit Modal -->
 {#if editingEmp}
 	<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onclick={() => (editingEmp = null)}>
-		<div class="card bg-surface-50-950-token p-6 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-surface-300-600-token" onclick={(e) => e.stopPropagation()}>
+		<div class="card bg-surface-50-950 p-6 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto shadow-2xl border border-surface-300-700" onclick={(e) => e.stopPropagation()}>
 			<h3 class="h4">Edit: {editingEmp.name} ({editingEmp.employeeId})</h3>
 			<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
 				<label class="label"><span>Nama</span><input class="input" bind:value={editForm.name} /></label>

@@ -63,7 +63,7 @@
 	{:else}
 		<div class="space-y-1">
 			{#each getDays() as day}
-				<div class="flex items-center gap-2 p-2 rounded {day.dow === 0 || day.dow === 6 ? 'bg-surface-200-700-token' : ''}">
+				<div class="flex items-center gap-2 p-2 rounded {day.dow === 0 || day.dow === 6 ? 'bg-surface-200-800' : ''}">
 					<span class="w-10 text-xs">{day.date.split('-')[2]}</span>
 					<span class="w-10 text-xs opacity-60">{day.name}</span>
 					<div class="flex gap-1 flex-1">

@@ -56,7 +56,7 @@
 		<div class="card preset-tonal p-4">
 			<h3 class="h4 mb-3">Senarai Slot</h3>
 			{#each mySlots as s}
-				<div class="flex items-center gap-2 p-2 text-sm border-b border-surface-300-600-token">
+				<div class="flex items-center gap-2 p-2 text-sm border-b border-surface-300-700">
 					<span class="font-mono text-xs">{s.date}</span>
 					<span class="badge badge-sm {s.slotType === 'AE' ? 'preset-filled-error-500' : 'preset-filled-primary-500'}">{s.slotType}</span>
 					<span class="flex-1 text-xs">{s.day}</span>

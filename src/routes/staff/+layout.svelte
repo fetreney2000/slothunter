@@ -21,7 +21,7 @@
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<AppBar background="bg-surface-100-800-token" border="border-b border-surface-300-600-token">
+	<AppBar background="bg-surface-100-900" border="border-b border-surface-300-700">
 		{#snippet lead()}
 			<span class="text-lg font-bold">🦥 Slothunter</span>
 		{/snippet}
@@ -42,7 +42,7 @@
 	</main>
 
 	<!-- Mobile bottom nav -->
-	<nav class="fixed bottom-0 left-0 right-0 bg-surface-100-800-token border-t border-surface-300-600-token md:hidden safe-bottom z-50">
+	<nav class="fixed bottom-0 left-0 right-0 bg-surface-100-900 border-t border-surface-300-700 md:hidden safe-bottom z-50">
 		<div class="flex justify-around py-2">
 			{#each navItems.slice(0, 5) as item}
 				<a href={item.href} class="flex flex-col items-center gap-0.5 text-xs">

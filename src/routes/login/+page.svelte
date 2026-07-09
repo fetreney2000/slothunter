@@ -30,7 +30,7 @@
 
 <svelte:head><title>Log Masuk - Slothunter</title></svelte:head>
 
-<div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-surface-50 to-surface-200-700-token p-4">
+<div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-surface-50 to-surface-200-800 p-4">
 	<div class="card w-full max-w-md p-8 md:p-10 space-y-6 shadow-xl">
 		<div class="flex flex-col items-center gap-3">
 			<span class="text-6xl">🦥</span>

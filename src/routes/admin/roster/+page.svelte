@@ -116,7 +116,7 @@
 	{#if running}
 		<div class="card preset-tonal p-4 space-y-2">
 			<div class="flex justify-between text-sm"><span>{progressMessage}</span><span>{progress}%</span></div>
-			<div class="w-full bg-surface-200-700-token rounded-full h-3">
+			<div class="w-full bg-surface-200-800 rounded-full h-3">
 				<div class="bg-primary-500 h-3 rounded-full transition-all" style="width: {progress}%"></div>
 			</div>
 		</div>

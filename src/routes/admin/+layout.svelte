@@ -29,8 +29,8 @@
 
 <div class="flex min-h-screen">
 	<!-- Desktop Sidebar - always visible on md+ -->
-	<aside class="hidden md:flex flex-col w-56 bg-surface-100-800-token border-r border-surface-300-600-token shrink-0">
-		<div class="p-4 border-b border-surface-300-600-token">
+	<aside class="hidden md:flex flex-col w-56 bg-surface-100-900 border-r border-surface-300-700 shrink-0">
+		<div class="p-4 border-b border-surface-300-700">
 			<a href="/admin" class="flex items-center gap-2">
 				<span class="text-2xl">🦥</span>
 				<span class="text-lg font-bold">Admin</span>
@@ -43,7 +43,7 @@
 				</a>
 			{/each}
 		</nav>
-		<div class="p-3 border-t border-surface-300-600-token">
+		<div class="p-3 border-t border-surface-300-700">
 			<p class="text-xs opacity-60 truncate">{data.user?.name}</p>
 			<button class="btn preset-tonal-error btn-sm w-full mt-1" onclick={handleLogout}>
 				Keluar
@@ -54,7 +54,7 @@
 	<!-- Main content area -->
 	<div class="flex-1 flex flex-col min-w-0">
 		<!-- Top bar (mobile + desktop) -->
-		<AppBar background="bg-surface-100-800-token" border="border-b border-surface-300-600-token">
+		<AppBar background="bg-surface-100-900" border="border-b border-surface-300-700">
 			{#snippet lead()}
 				<button class="btn-icon preset-ghost md:hidden" onclick={() => (mobileMenuOpen = !mobileMenuOpen)}>
 					<span class="text-xl">☰</span>
@@ -69,7 +69,7 @@
 
 		<!-- Mobile dropdown menu -->
 		{#if mobileMenuOpen}
-			<div class="md:hidden bg-surface-100-800-token border-b border-surface-300-600-token p-2 space-y-1">
+			<div class="md:hidden bg-surface-100-900 border-b border-surface-300-700 p-2 space-y-1">
 				{#each navItems as item}
 					<a href={item.href} class="btn preset-ghost w-full justify-start text-sm" onclick={() => (mobileMenuOpen = false)}>
 						<span class="mr-2">{item.icon}</span>{item.label}
@@ -87,7 +87,7 @@
 </div>
 
 <!-- Mobile bottom nav -->
-<nav class="fixed bottom-0 left-0 right-0 bg-surface-100-800-token border-t border-surface-300-600-token md:hidden safe-bottom z-50">
+<nav class="fixed bottom-0 left-0 right-0 bg-surface-100-900 border-t border-surface-300-700 md:hidden safe-bottom z-50">
 	<div class="flex justify-around py-2">
 		<a href="/admin" class="flex flex-col items-center gap-0.5 text-xs"><span class="text-lg">📊</span>Utama</a>
 		<a href="/admin/employees" class="flex flex-col items-center gap-0.5 text-xs"><span class="text-lg">👥</span>Staf</a>

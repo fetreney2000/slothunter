@@ -96,7 +96,7 @@
 						<span class="font-bold">{emp.name} <span class="opacity-60">({emp.dept}/{emp.role})</span></span>
 						<span>{emp.totalHours}h / {maxHrs}h ({Math.round(pct)}%)</span>
 					</div>
-					<div class="w-full bg-surface-300-600-token rounded-full h-4 overflow-hidden">
+					<div class="w-full bg-surface-300-700 rounded-full h-4 overflow-hidden">
 						<div class="h-4 rounded-full transition-all {pct > 90 ? 'bg-error-500' : pct > 70 ? 'bg-warning-500' : 'bg-primary-500'}"
 							style="width: {pct}%"></div>
 					</div>

@@ -52,11 +52,6 @@ body {
 /* Mobile safe areas */
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
 
-/* Modal/overlay fix - ensure modals are visible */
-.fixed.inset-0 {
-	background-color: rgba(0, 0, 0, 0.5);
-}
-
 /* Animations */
 @keyframes fadeIn {
 	from { opacity: 0; transform: translateY(8px); }

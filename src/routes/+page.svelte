@@ -6,7 +6,7 @@
 	<title>Slothunter - OT Roster Management</title>
 </svelte:head>
 
-<div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-surface-50 to-surface-200-700-token p-4">
+<div class="flex min-h-screen items-center justify-center bg-gradient-to-br from-surface-50 to-surface-200-800 p-4">
 	<div class="card w-full max-w-lg p-10 text-center space-y-8 shadow-xl">
 		<div class="flex flex-col items-center gap-4">
 			<span class="text-7xl">🦥</span>

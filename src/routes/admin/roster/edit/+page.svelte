@@ -105,7 +105,7 @@
 <!-- Edit Modal -->
 {#if editingSlot}
 	<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onclick={cancelEdit}>
-		<div class="card bg-surface-50-950-token p-6 w-full max-w-md space-y-4 shadow-2xl border border-surface-300-600-token" onclick={(e) => e.stopPropagation()}>
+		<div class="card bg-surface-50-950 p-6 w-full max-w-md space-y-4 shadow-2xl border border-surface-300-700" onclick={(e) => e.stopPropagation()}>
 			<h3 class="h4">Edit Slot</h3>
 			<div class="space-y-2 text-sm">
 				<p><strong>Tarikh:</strong> {editingSlot.date} ({editingSlot.day})</p>

@@ -180,7 +180,7 @@
 				<span class="w-4 h-4 rounded bg-error-500"></span> Tidak tersedia
 			</span>
 			<span class="flex items-center gap-1">
-				<span class="w-4 h-4 rounded bg-surface-300-600-token"></span> Tersedia
+				<span class="w-4 h-4 rounded bg-surface-300-700"></span> Tersedia
 			</span>
 		</div>
 

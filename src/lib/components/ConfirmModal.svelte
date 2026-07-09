@@ -20,7 +20,7 @@
 
 {#if open}
 	<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onclick={handleCancel} role="dialog">
-		<div class="card bg-surface-50-950-token p-6 w-full max-w-md space-y-4 shadow-2xl border border-surface-300-600-token" onclick={(e) => e.stopPropagation()}>
+		<div class="card bg-surface-50-950 p-6 w-full max-w-md space-y-4 shadow-2xl border border-surface-300-700" onclick={(e) => e.stopPropagation()}>
 			<h3 class="h3">{title}</h3>
 			<p class="opacity-70">{message}</p>
 			<div class="flex gap-2 justify-end">
