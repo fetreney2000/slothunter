@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 @import '@skeletonlabs/skeleton/themes/hamlindigo';
 @import '@skeletonlabs/skeleton';
+@import '@skeletonlabs/skeleton/optional/presets';
 
 @theme {
 	--font-sans: 'Inter', system-ui, -apple-system, sans-serif;
@@ -58,3 +59,35 @@ body {
 	to { opacity: 1; transform: translateY(0); }
 }
 .animate-in { animation: fadeIn 0.2s ease-out; }
+
+/* Ghost button preset - not present in Skeleton v3.2.2 */
+@utility preset-ghost {
+	background-color: transparent;
+	color: var(--color-surface-950-50);
+	&:hover:not(:disabled) {
+		background-color: color-mix(in oklab, var(--color-surface-950-50) 8%, transparent);
+	}
+}
+
+/* Alert component - not present in Skeleton v3.2.2 */
+@utility alert {
+	border-radius: var(--radius-container);
+	padding: --spacing(4);
+	& p {
+		font-size: var(--text-sm);
+	}
+}
+
+/* Table variants - not present in Skeleton v3.2.2 */
+@utility table-hover {
+	& tbody tr {
+		&:hover {
+			background-color: var(--color-surface-200-800);
+		}
+	}
+}
+@utility table-compact {
+	& th, & td {
+		padding: --spacing(1);
+	}
+}
