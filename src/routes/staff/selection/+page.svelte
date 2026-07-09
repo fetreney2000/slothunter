@@ -71,7 +71,7 @@
 		let weekend = 0, weekday = 0;
 		for (const s of slots) {
 			if (s.employeeId !== data.user?.employeeId || s.slotType === 'POST-AE') continue;
-			if (s.date >= start && s.date <= end) {
+			if ((s.date as string) >= start && (s.date as string) <= end) {
 				if (isWeekend(s.date as string)) weekend++;
 				else weekday++;
 			}
@@ -189,11 +189,11 @@
 			{#each filteredSlots as slot}
 				<div class="card preset-tonal-surface p-3 flex items-center justify-between gap-2">
 					<div class="flex items-center gap-2 min-w-0">
-						<span class="badge {slotColor(slot.slotType)} shrink-0">{slot.slotType}</span>
+						<span class="badge {slotColor(slot.slotType as string)} shrink-0">{slot.slotType}</span>
 						<div class="min-w-0">
 							<p class="text-sm font-bold">{slot.date} ({slot.day})</p>
 							<p class="text-xs opacity-60">
-								{isWeekend(slot.date) ? 'Hujung Minggu' : 'Hari Bekerja'} &bull; {slot.hours}h
+								{isWeekend(slot.date as string) ? 'Hujung Minggu' : 'Hari Bekerja'} &bull; {slot.hours}h
 								{slot.employeeId ? ` • ${slot.employeeName}` : ''}
 							</p>
 						</div>

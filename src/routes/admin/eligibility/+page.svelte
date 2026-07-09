@@ -26,7 +26,7 @@
 		const map = new Map<string, { name: string; dept: string; role: string; hours: number; maxHours: number }>();
 		for (const e of employees) {
 			if (!e.active) continue;
-			map.set(e.employeeId, { name: e.name, dept: e.dept, role: e.role, hours: 0, maxHours: e.maxHoursPerMonth || 56 });
+			map.set(e.employeeId as string, { name: e.name as string, dept: e.dept as string, role: e.role as string, hours: 0, maxHours: (e.maxHoursPerMonth as number) || 56 });
 		}
 		for (const s of slots) {
 			if (s.slotType === 'POST-AE' || !s.employeeId) continue;

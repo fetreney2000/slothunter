@@ -80,10 +80,10 @@
 			<p class="text-sm opacity-60">{preselections.length} pra-pilihan</p>
 			{#each preselections as p}
 				<div class="flex items-center gap-2 p-2 card preset-tonal-surface">
-					<span class="font-mono text-xs">{p.date}</span>
-					<span class="badge badge-sm preset-filled-primary-500">{p.slotType}</span>
-					<span class="flex-1 text-sm">{empName(p.employeeId)} ({p.employeeId})</span>
-					<button class="btn btn-sm preset-tonal-error" onclick={() => removePreselection(p.date, p.slotType)}>Padam</button>
+					<span class="font-mono text-xs">{p.date as string}</span>
+					<span class="badge badge-sm preset-filled-primary-500">{p.slotType as string}</span>
+					<span class="flex-1 text-sm">{empName(p.employeeId as string)} ({p.employeeId as string})</span>
+					<button class="btn btn-sm preset-tonal-error" onclick={() => removePreselection(p.date as string, p.slotType as string)}>Padam</button>
 				</div>
 			{/each}
 		</div>

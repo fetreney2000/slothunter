@@ -41,7 +41,7 @@
 			{#each logs as log}
 				<div class="card preset-tonal-surface p-3 text-sm">
 					<div class="flex items-center justify-between gap-2 mb-1">
-						<span class="font-mono text-xs">{fmt(log.changedAt)}</span>
+						<span class="font-mono text-xs">{fmt(log.changedAt as string)}</span>
 						<span class="badge badge-sm {log.action === 'UPDATE' ? 'preset-filled-warning-500' : 'preset-filled-tertiary-500'}">{log.action}</span>
 					</div>
 					<p><strong>{log.date}</strong> &bull; {log.slot}</p>
@@ -49,7 +49,7 @@
 						{log.oldEmployeeName || '(kosong)'} &rarr; {log.newEmployeeName || '(kosong)'}
 						{log.oldDept}/{log.newDept} &bull; {log.newHours}h
 					</p>
-					<p class="text-xs opacity-40">oleh {log.changedBy?.name} ({log.changedBy?.email})</p>
+					<p class="text-xs opacity-40">oleh {(log.changedBy as Record<string, unknown>)?.name} ({(log.changedBy as Record<string, unknown>)?.email})</p>
 				</div>
 			{/each}
 		</div>

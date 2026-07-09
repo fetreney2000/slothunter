@@ -12,8 +12,8 @@ export interface IRosterLog extends Document {
 	slot: string; // Slot type (AE, OPD_1, etc.)
 	oldEmployeeId: string;
 	oldEmployeeName: string;
-	oldDept: 'IPP' | 'OPD';
-	oldRole: 'PPF' | 'PRA';
+	oldDept: 'IPP' | 'OPD' | '';
+	oldRole: 'PPF' | 'PRA' | '';
 	oldHours: number;
 	newEmployeeId: string;
 	newEmployeeName: string;

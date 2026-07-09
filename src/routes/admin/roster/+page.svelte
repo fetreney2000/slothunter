@@ -133,6 +133,7 @@
 
 	<!-- Result -->
 	{#if result}
+		{@const warningsArr = result.warnings as Array<unknown>}
 		<div class="card preset-tonal-success p-4 space-y-2">
 			<h3 class="h4">✅ Keputusan</h3>
 			<div class="grid grid-cols-3 gap-2 text-sm">
@@ -140,9 +141,9 @@
 				<div><p class="opacity-60">Masa</p><p class="font-bold">{((result.elapsedMs as number)/1000).toFixed(1)}s</p></div>
 				<div><p class="opacity-60">Penalti</p><p class="font-bold">{(result.metrics as Record<string,unknown>)?.hardPenalty}</p></div>
 			</div>
-			{#if (result.warnings as string[])?.length > 0}
-				<details class="text-xs"><summary>Amaran ({(result.warnings as string[]).length})</summary>
-					<ul class="list-disc pl-4">{#each result.warnings as w}<li>{w}</li>{/each}</ul>
+			{#if (warningsArr?.length ?? 0) > 0}
+				<details class="text-xs"><summary>Amaran ({warningsArr.length})</summary>
+					<ul class="list-disc pl-4">{#each warningsArr as w}<li>{w}</li>{/each}</ul>
 				</details>
 			{/if}
 		</div>
@@ -180,7 +181,7 @@
 							<tr class="{!s.employeeId ? 'bg-error-500/10' : ''}">
 								<td class="whitespace-nowrap">{s.date}</td>
 								<td>{s.day}</td>
-								<td><span class="badge badge-sm {s.slotType === 'AE' ? 'preset-filled-error-500' : s.slotType?.startsWith('IPP_') ? 'preset-filled-primary-500' : 'preset-filled-success-500'}">{s.slotType}</span></td>
+								<td><span class="badge badge-sm {s.slotType === 'AE' ? 'preset-filled-error-500' : (s.slotType as string)?.startsWith('IPP_') ? 'preset-filled-primary-500' : 'preset-filled-success-500'}">{s.slotType}</span></td>
 								<td>{s.employeeName || '(kosong)'}</td>
 								<td>{s.dept}</td>
 								<td>{s.hours}h</td>

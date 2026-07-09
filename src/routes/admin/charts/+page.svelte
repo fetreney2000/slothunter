@@ -28,7 +28,7 @@
 		const map = new Map<string, { name: string; dept: string; role: string; totalHours: number; aeCount: number; phCount: number; slotCount: number }>();
 		for (const e of employees) {
 			if (!e.active) continue;
-			map.set(e.employeeId, { name: e.name, dept: e.dept, role: e.role, totalHours: 0, aeCount: 0, phCount: 0, slotCount: 0 });
+			map.set(e.employeeId as string, { name: e.name as string, dept: e.dept as string, role: e.role as string, totalHours: 0, aeCount: 0, phCount: 0, slotCount: 0 });
 		}
 		// Track holidays
 		const holidayDates = new Set<string>();
@@ -89,7 +89,7 @@
 		<div class="card preset-tonal p-4 space-y-3">
 			<h3 class="h4">Jam OT Mengikut Kakitangan</h3>
 			{#each stats() as emp}
-				{@const maxHrs = employees.find(e => e.employeeId === emp.name)?.maxHoursPerMonth || 56}
+				{@const maxHrs = (employees.find(e => e.employeeId === emp.name)?.maxHoursPerMonth as number) || 56}
 				{@const pct = Math.min((emp.totalHours / maxHrs) * 100, 100)}
 				<div class="space-y-1">
 					<div class="flex justify-between text-xs">

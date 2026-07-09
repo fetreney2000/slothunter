@@ -29,7 +29,7 @@ export const POST: RequestHandler = async ({ locals, request }) => {
 		if (currentPhase) {
 			const d = new Date(date + 'T00:00:00').getDay();
 			const isWeekend = d === 0 || d === 6;
-			const max = isWeekend ? currentPhase.weekendSlots : currentPhase.weekdaySlots;
+			const max = (isWeekend ? currentPhase.weekendSlots : currentPhase.weekdaySlots) as number;
 
 			// Count existing slots in this phase
 			const phaseSlots = await RosterSlot.find({

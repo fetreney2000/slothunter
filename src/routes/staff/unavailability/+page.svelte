@@ -72,8 +72,8 @@
 			const currentDates = new Set(currentData.records.map((r: { date: string }) => r.date));
 
 			// Find dates to add and remove
-			const toAdd = [...unavailableDates].filter((d) => !currentDates.has(d));
-			const toRemove = [...currentDates].filter((d) => !unavailableDates.has(d));
+			const toAdd = [...unavailableDates].filter((d) => !currentDates.has(d as string));
+			const toRemove = [...currentDates].filter((d) => !unavailableDates.has(d as string));
 
 			if (toAdd.length > 0) {
 				await fetch('/api/unavailability', {

@@ -84,7 +84,7 @@
 						<tr class="{!s.employeeId ? 'bg-error-500/10' : ''} {editingSlot === s ? 'ring-2 ring-primary-500' : ''}">
 							<td class="whitespace-nowrap">{s.date} ({s.day})</td>
 							<td>
-								<span class="badge badge-sm {s.slotType === 'AE' ? 'preset-filled-error-500' : s.slotType?.startsWith('IPP_') ? 'preset-filled-primary-500' : 'preset-filled-success-500'}">
+								<span class="badge badge-sm {s.slotType === 'AE' ? 'preset-filled-error-500' : (s.slotType as string)?.startsWith('IPP_') ? 'preset-filled-primary-500' : 'preset-filled-success-500'}">
 									{s.slotType}
 								</span>
 							</td>

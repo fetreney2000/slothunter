@@ -34,8 +34,8 @@
 	const slotsByDate = $derived(() => {
 		const map = new Map<string, Array<Record<string, unknown>>>();
 		for (const s of slots) {
-			if (!map.has(s.date)) map.set(s.date, []);
-			map.get(s.date)!.push(s);
+			if (!map.has(s.date as string)) map.set(s.date as string, []);
+			map.get(s.date as string)!.push(s);
 		}
 		return map;
 	});
@@ -108,7 +108,7 @@
 					<div class="flex items-center gap-2 p-2 text-sm {slot.employeeId === data.user?.employeeId ? 'bg-primary-500/10 rounded' : ''}">
 						<span class="w-20 font-mono text-xs">{slot.date}</span>
 						<span class="w-8 text-xs opacity-60">{slot.day}</span>
-						<span class="badge badge-sm {slot.slotType === 'AE' ? 'preset-filled-error-500' : slot.slotType?.startsWith('IPP_') ? 'preset-filled-primary-500' : 'preset-filled-success-500'}">
+						<span class="badge badge-sm {slot.slotType === 'AE' ? 'preset-filled-error-500' : (slot.slotType as string)?.startsWith('IPP_') ? 'preset-filled-primary-500' : 'preset-filled-success-500'}">
 							{slot.slotType}
 						</span>
 						<span class="flex-1 truncate text-xs">
@@ -123,7 +123,7 @@
 		<!-- Calendar View - Day Cards -->
 		<div class="space-y-3">
 			{#each dates() as date}
-				{@const daySlots = slotsByDate().get(date) || []}
+				{@const daySlots = slotsByDate().get(date as string) || []}
 				{@const isMyDay = daySlots.some((s) => s.employeeId === data.user?.employeeId)}
 				<div class="card {isMyDay ? 'preset-tonal-primary' : 'preset-tonal-surface'} p-3">
 					<div class="flex items-center justify-between mb-2">

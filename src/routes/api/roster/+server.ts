@@ -15,13 +15,13 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 	const rosterId = url.searchParams.get('rosterId');
 	const employeeId = url.searchParams.get('employeeId');
 
-	let roster;
+	let roster: Record<string, unknown> | null = null;
 	if (rosterId) {
-		roster = await Roster.findOne({ rosterId }).lean();
+		roster = await Roster.findOne({ rosterId }).lean() as Record<string, unknown> | null;
 	} else if (month) {
 		roster = await Roster.findOne({ month, isCopy: false })
 			.sort({ generatedAt: -1 })
-			.lean();
+			.lean() as Record<string, unknown> | null;
 	}
 
 	if (!roster) {
