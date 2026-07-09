@@ -5,6 +5,28 @@
  */
 const FONT = 'Arial Narrow';
 
+// ─── COLOR CONSTANTS (ARGB) ──────────────────────────────────────
+const COLORS = {
+	GREEN: 'FF92D050', // HARI BEKERJA BIASA headers
+	PINK: 'FFE6CCE6', // HARI REHAT BIASA / CUTI UMUM headers
+	SALMON: 'FFFFD6D6', // FARMASI KECEMASAN headers
+	BLUE: 'FFBDD7EE', // PRABUNGKUS headers
+	YELLOW: 'FFFFFF00', // FARMASI AMBULATORI sub-headers
+	ORANGE: 'FFFFC000', // FARMASI PESAKIT DALAM sub-headers
+	LIGHT_GREEN: 'FFC6EFCE', // AE / POST-AE cells
+	PEACH: 'FFFCE4D6', // CUTI UMUM data rows
+	LIGHT_GRAY: 'FFF2F2F2', // Weekend (SABTU/AHAD) data rows
+	WHITE: 'FFFFFFFF', // Regular weekday data rows
+};
+
+// ─── BORDERS ──────────────────────────────────────────────────────
+const THIN_BORDER = {
+	top: { style: 'thin' as const },
+	left: { style: 'thin' as const },
+	bottom: { style: 'thin' as const },
+	right: { style: 'thin' as const }
+};
+
 export interface SlotData {
 	date: string;
 	day: string;
@@ -47,13 +69,28 @@ export async function exportRosterToExcel(
 		4: 'KHAMIS', 5: 'JUMAAT', 6: 'SABTU'
 	};
 
+	// Helper: apply standard cell style
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	function styleCell(cell: any, opts: {
+		fontSize?: number; bold?: boolean; fill?: string;
+		hAlign?: 'left' | 'center' | 'right'; wrap?: boolean;
+	} = {}): void {
+		const { fontSize = 10, bold = false, fill, hAlign = 'center', wrap = false } = opts;
+		cell.font = { name: FONT, size: fontSize, bold };
+		cell.alignment = { horizontal: hAlign, vertical: 'middle', wrapText: wrap };
+		cell.border = THIN_BORDER;
+		if (fill) {
+			cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: fill } };
+		}
+	}
+
 	// ─── ROW 1: TITLE ────────────────────────────────────────────
 	ws.mergeCells('A1:V1');
 	const titleCell = ws.getCell('A1');
 	titleCell.value = 'JADUAL KERJA LEBIH MASA JABATAN FARMASI HOSPITAL KENINGAU (PPF & PA)';
-	titleCell.font = { name: FONT, bold: true, size: 34 };
+	titleCell.font = { name: FONT, bold: true, size: 16 };
 	titleCell.alignment = { horizontal: 'center', vertical: 'middle' };
-	ws.getRow(1).height = 46;
+	ws.getRow(1).height = 35;
 
 	// ─── ROW 2: SUB-HEADER CATEGORIES ────────────────────────────
 	ws.mergeCells('C2:F2');
@@ -61,81 +98,148 @@ export async function exportRosterToExcel(
 	ws.mergeCells('R2:V2');
 
 	const row2 = ws.getRow(2);
+	// A2: BULAN
 	row2.getCell(1).value = 'BULAN';
+	styleCell(row2.getCell(1), { bold: true });
+	// B2: TAHUN
 	row2.getCell(2).value = 'TAHUN';
+	styleCell(row2.getCell(2), { bold: true });
+	// C2:F2: HARI BEKERJA BIASA (GREEN)
 	row2.getCell(3).value = 'HARI BEKERJA BIASA';
+	for (let c = 3; c <= 6; c++) styleCell(row2.getCell(c), { bold: true, fill: COLORS.GREEN });
+	// G2:Q2: HARI REHAT BIASA / CUTI UMUM (PINK)
 	row2.getCell(7).value = 'HARI REHAT BIASA / CUTI UMUM';
+	for (let c = 7; c <= 17; c++) styleCell(row2.getCell(c), { bold: true, fill: COLORS.PINK });
+	// R2:V2: FARMASI KECEMASAN (SALMON)
 	row2.getCell(18).value = 'FARMASI KECEMASAN';
+	for (let c = 18; c <= 22; c++) styleCell(row2.getCell(c), { bold: true, fill: COLORS.SALMON });
 	row2.height = 22;
-	styleHeaderRow(row2);
 
 	// ─── ROW 3: MONTH / YEAR / TIMES ─────────────────────────────
 	const row3 = ws.getRow(3);
+	// A3: MEI
 	row3.getCell(1).value = monthName;
+	styleCell(row3.getCell(1), { fontSize: 10 });
+	// B3: 2026
 	row3.getCell(2).value = year;
-	for (let c = 3; c <= 6; c++) row3.getCell(c).value = '6PM - 10PM';
-	row3.getCell(7).value = '8AM - 3PM';
-	row3.getCell(8).value = '8AM - 3PM';
-	row3.getCell(9).value = '8AM - 3PM';
-	row3.getCell(10).value = '3PM - 10PM';
-	row3.getCell(11).value = '3PM - 10PM';
-	row3.getCell(12).value = '8AM - 3PM';
-	row3.getCell(13).value = '8AM - 3PM';
-	row3.getCell(14).value = '3PM - 10PM';
-	row3.getCell(15).value = '3PM - 10PM';
-	for (let c = 16; c <= 18; c++) row3.getCell(c).value = '8AM - 2PM';
-	for (let c = 19; c <= 22; c++) row3.getCell(c).value = 'SETIAP HARI';
+	styleCell(row3.getCell(2), { fontSize: 10 });
+	// C3:F3: 6PM - 10PM (GREEN)
+	for (let c = 3; c <= 6; c++) {
+		row3.getCell(c).value = '6PM - 10PM';
+		styleCell(row3.getCell(c), { bold: true, fill: COLORS.GREEN });
+	}
+	// G3:I3: 8AM - 3PM (PINK)
+	for (let c = 7; c <= 9; c++) {
+		row3.getCell(c).value = '8AM - 3PM';
+		styleCell(row3.getCell(c), { bold: true, fill: COLORS.PINK });
+	}
+	// J3:K3: 3PM - 10PM (PINK)
+	for (let c = 10; c <= 11; c++) {
+		row3.getCell(c).value = '3PM - 10PM';
+		styleCell(row3.getCell(c), { bold: true, fill: COLORS.PINK });
+	}
+	// L3:M3: 8AM - 3PM (PINK)
+	for (let c = 12; c <= 13; c++) {
+		row3.getCell(c).value = '8AM - 3PM';
+		styleCell(row3.getCell(c), { bold: true, fill: COLORS.PINK });
+	}
+	// N3:O3: 3PM - 10PM (PINK)
+	for (let c = 14; c <= 15; c++) {
+		row3.getCell(c).value = '3PM - 10PM';
+		styleCell(row3.getCell(c), { bold: true, fill: COLORS.PINK });
+	}
+	// P3:R3: 8AM - 2PM (BLUE - PRABUNGKUS)
+	for (let c = 16; c <= 18; c++) {
+		row3.getCell(c).value = '8AM - 2PM';
+		styleCell(row3.getCell(c), { bold: true, fill: COLORS.BLUE });
+	}
+	// S3:V3: SETIAP HARI (SALMON)
+	for (let c = 19; c <= 22; c++) {
+		row3.getCell(c).value = 'SETIAP HARI';
+		styleCell(row3.getCell(c), { bold: true, fill: COLORS.SALMON });
+	}
 	row3.height = 22;
-	styleHeaderRow(row3);
 
 	// ─── ROW 4: DEPARTMENT LABELS ────────────────────────────────
-	const row4 = ws.getRow(4);
-	row4.getCell(1).value = 'TARIKH';
-	row4.getCell(2).value = 'HARI';
-	row4.getCell(3).value = 'FARMASI AMBULATORI';
-	row4.getCell(4).value = 'FARMASI AMBULATORI';
-	row4.getCell(5).value = 'FARMASI AMBULATORI';
-	row4.getCell(6).value = 'FARMASI PESAKIT DALAM';
-	for (let c = 7; c <= 11; c++) row4.getCell(c).value = 'FARMASI AMBULATORI';
-	for (let c = 12; c <= 15; c++) row4.getCell(c).value = 'FARMASI PESAKIT DALAM';
-	for (let c = 16; c <= 18; c++) row4.getCell(c).value = 'PRABUNGKUS';
-	row4.getCell(19).value = '10PM - 12AM';
-	row4.getCell(20).value = '10PM - 12AM';
-	row4.getCell(21).value = '12AM - 8AM';
-	row4.getCell(22).value = '12AM - 8AM';
-	row4.height = 45;
-	styleHeaderRow(row4);
-
-	// Merge department group headers
 	ws.mergeCells('C4:E4');
 	ws.mergeCells('G4:K4');
 	ws.mergeCells('L4:O4');
 	ws.mergeCells('P4:R4');
 
+	const row4 = ws.getRow(4);
+	// A4: TARIKH
+	row4.getCell(1).value = 'TARIKH';
+	styleCell(row4.getCell(1), { bold: true });
+	// B4: HARI
+	row4.getCell(2).value = 'HARI';
+	styleCell(row4.getCell(2), { bold: true });
+	// C4:E4: FARMASI AMBULATORI (YELLOW)
+	row4.getCell(3).value = 'FARMASI AMBULATORI';
+	for (let c = 3; c <= 5; c++) styleCell(row4.getCell(c), { bold: true, fill: COLORS.YELLOW, wrap: true });
+	// F4: FARMASI PESAKIT DALAM (ORANGE)
+	row4.getCell(6).value = 'FARMASI PESAKIT DALAM';
+	styleCell(row4.getCell(6), { bold: true, fill: COLORS.ORANGE, wrap: true });
+	// G4:K4: FARMASI AMBULATORI (YELLOW)
+	row4.getCell(7).value = 'FARMASI AMBULATORI';
+	for (let c = 7; c <= 11; c++) styleCell(row4.getCell(c), { bold: true, fill: COLORS.YELLOW, wrap: true });
+	// L4:O4: FARMASI PESAKIT DALAM (ORANGE)
+	row4.getCell(12).value = 'FARMASI PESAKIT DALAM';
+	for (let c = 12; c <= 15; c++) styleCell(row4.getCell(c), { bold: true, fill: COLORS.ORANGE, wrap: true });
+	// P4:R4: PRABUNGKUS (BLUE)
+	row4.getCell(16).value = 'PRABUNGKUS';
+	for (let c = 16; c <= 18; c++) styleCell(row4.getCell(c), { bold: true, fill: COLORS.BLUE, wrap: true });
+	// S4:T4: 10PM - 12AM (SALMON)
+	row4.getCell(19).value = '10PM - 12AM';
+	styleCell(row4.getCell(19), { bold: true, fill: COLORS.SALMON });
+	row4.getCell(20).value = '10PM - 12AM';
+	styleCell(row4.getCell(20), { bold: true, fill: COLORS.SALMON });
+	// U4:V4: 12AM - 8AM (SALMON)
+	row4.getCell(21).value = '12AM - 8AM';
+	styleCell(row4.getCell(21), { bold: true, fill: COLORS.SALMON });
+	row4.getCell(22).value = '12AM - 8AM';
+	styleCell(row4.getCell(22), { bold: true, fill: COLORS.SALMON });
+	row4.height = 45;
+
 	// ─── ROW 5: SLOT TYPE LABELS ─────────────────────────────────
 	const row5 = ws.getRow(5);
-	row5.getCell(3).value = 'OPD_1';
-	row5.getCell(4).value = 'OPD_2';
-	row5.getCell(5).value = 'OPD_3';
+	// C5:E5: OPD_1, OPD_2, OPD_3 (YELLOW)
+	const opdLabelsBE = ['OPD_1', 'OPD_2', 'OPD_3'];
+	for (let i = 0; i < 3; i++) {
+		row5.getCell(3 + i).value = opdLabelsBE[i];
+		styleCell(row5.getCell(3 + i), { bold: true, fill: COLORS.YELLOW });
+	}
+	// F5: IPP_1 (ORANGE)
 	row5.getCell(6).value = 'IPP_1';
-	row5.getCell(7).value = 'OPD_1';
-	row5.getCell(8).value = 'OPD_2';
-	row5.getCell(9).value = 'OPD_3';
-	row5.getCell(10).value = 'OPD_4';
-	row5.getCell(11).value = 'OPD_5';
-	row5.getCell(12).value = 'IPP_1';
-	row5.getCell(13).value = 'IPP_2';
-	row5.getCell(14).value = 'IPP_3';
-	row5.getCell(15).value = 'IPP_4';
-	row5.getCell(16).value = 'PP_PPF';
-	row5.getCell(17).value = 'PP_PRA_1';
-	row5.getCell(18).value = 'PP_PRA_2';
-	row5.getCell(19).value = '';
+	styleCell(row5.getCell(6), { bold: true, fill: COLORS.ORANGE });
+	// G5:K5: OPD_1-OPD_5 (YELLOW)
+	const opdLabelsRH = ['OPD_1', 'OPD_2', 'OPD_3', 'OPD_4', 'OPD_5'];
+	for (let i = 0; i < 5; i++) {
+		row5.getCell(7 + i).value = opdLabelsRH[i];
+		styleCell(row5.getCell(7 + i), { bold: true, fill: COLORS.YELLOW });
+	}
+	// L5:O5: IPP_1-IPP_4 (ORANGE)
+	const ippLabels = ['IPP_1', 'IPP_2', 'IPP_3', 'IPP_4'];
+	for (let i = 0; i < 4; i++) {
+		row5.getCell(12 + i).value = ippLabels[i];
+		styleCell(row5.getCell(12 + i), { bold: true, fill: COLORS.ORANGE });
+	}
+	// P5:R5: PP_PPF, PP_PRA_1, PP_PRA_2 (BLUE)
+	const ppLabels = ['PP_PPF', 'PP_PRA_1', 'PP_PRA_2'];
+	for (let i = 0; i < 3; i++) {
+		row5.getCell(16 + i).value = ppLabels[i];
+		styleCell(row5.getCell(16 + i), { bold: true, fill: COLORS.BLUE });
+	}
+	// S5: empty (SALMON)
+	styleCell(row5.getCell(19), { fill: COLORS.SALMON });
+	// T5: AE (LIGHT GREEN)
 	row5.getCell(20).value = 'AE';
-	row5.getCell(21).value = '';
+	styleCell(row5.getCell(20), { bold: true, fill: COLORS.LIGHT_GREEN });
+	// U5: empty (SALMON)
+	styleCell(row5.getCell(21), { fill: COLORS.SALMON });
+	// V5: POST-AE (LIGHT GREEN)
 	row5.getCell(22).value = 'POST-AE';
-	row5.height = 30;
-	styleHeaderRow(row5);
+	styleCell(row5.getCell(22), { bold: true, fill: COLORS.LIGHT_GREEN });
+	row5.height = 25;
 
 	// ─── DATA ROWS (starting row 6) ──────────────────────────────
 	let rowNum = 6;
@@ -189,31 +293,49 @@ export async function exportRosterToExcel(
 			for (let c = 7; c <= 18; c++) row.getCell(c).value = '';
 		}
 
+		// S column: always empty
 		row.getCell(19).value = '';
+		// T column: AE
 		row.getCell(20).value = dateSlots.get('AE') || '';
+		// U column: always empty
 		row.getCell(21).value = '';
+		// V column: POST-AE
 		row.getCell(22).value = dateSlots.get('POST-AE') || '';
 
-		row.height = isHoliday || isWeekend ? 22 : 18;
+		// Determine row fill color
+		let rowFill: string;
+		if (isHoliday) {
+			rowFill = COLORS.PEACH;
+		} else if (isWeekend) {
+			rowFill = COLORS.LIGHT_GRAY;
+		} else {
+			rowFill = COLORS.WHITE;
+		}
+
+		// Apply styling to each cell
 		for (let c = 1; c <= 22; c++) {
 			const cell = row.getCell(c);
-			cell.font = { name: FONT, size: 16 };
-			cell.alignment = { horizontal: 'center', vertical: 'middle' };
-			cell.border = {
-				top: { style: 'thin' },
-				left: { style: 'thin' },
-				bottom: { style: 'thin' },
-				right: { style: 'thin' }
-			};
-			if (isHoliday) {
-				cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFCE4D6' } };
-			} else if (isWeekend) {
-				cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF2F2F2' } };
-			}
-		}
-		row.getCell(1).font = { name: FONT, size: 16, bold: true };
-		row.getCell(2).font = { name: FONT, size: 16, bold: true };
+			const isDateCol = c === 1 || c === 2;
+			const isAE = c === 20; // T column (AE)
+			const isPostAE = c === 22; // V column (POST-AE)
 
+			// Determine fill: AE/POST-AE get green, others get row fill
+			let fill: string;
+			if (isAE || isPostAE) {
+				// For CUTI UMUM rows, peach overrides; for others, green
+				fill = isHoliday ? COLORS.PEACH : COLORS.LIGHT_GREEN;
+			} else {
+				fill = rowFill;
+			}
+
+			styleCell(cell, {
+				fontSize: 10,
+				bold: isDateCol,
+				fill
+			});
+		}
+
+		row.height = 20;
 		rowNum++;
 	}
 
@@ -225,7 +347,7 @@ export async function exportRosterToExcel(
 	addFooterRow(ws, rowNum, '26.02.2026', '26.02.2026');
 
 	// ─── COLUMN WIDTHS ───────────────────────────────────────────
-	const colWidths = [6, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 14, 13, 14, 13, 14];
+	const colWidths = [6, 14, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12, 12];
 	colWidths.forEach((w, i) => ws.getColumn(i + 1).width = w);
 
 	// ─── PRINT SETUP ─────────────────────────────────────────────
@@ -256,30 +378,14 @@ export async function exportRosterToExcel(
 // ─── HELPERS ────────────────────────────────────────────────────
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function styleHeaderRow(row: any): void {
-	for (let c = 1; c <= 22; c++) {
-		const cell = row.getCell(c);
-		cell.font = { name: FONT, bold: true, size: 19 };
-		cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-		cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9E2F3' } };
-		cell.border = {
-			top: { style: 'thin' },
-			left: { style: 'thin' },
-			bottom: { style: 'thin' },
-			right: { style: 'thin' }
-		};
-	}
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function addFooterRow(ws: any, r: number, left: string, right: string, bold = false, italic = false): void {
 	const row = ws.getRow(r);
 	row.getCell(1).value = left;
 	row.getCell(20).value = right;
 	ws.mergeCells(`A${r}:D${r}`);
 	ws.mergeCells(`T${r}:V${r}`);
-	row.getCell(1).font = { name: FONT, size: 12, bold, italic };
-	row.getCell(20).font = { name: FONT, size: 12, bold, italic };
+	row.getCell(1).font = { name: FONT, size: 10, bold, italic };
+	row.getCell(20).font = { name: FONT, size: 10, bold, italic };
 	row.height = 20;
 }
 
@@ -291,8 +397,8 @@ function addSummarySheet(workbook: any, slots: SlotData[], month: string): void 
 	headers.forEach((h, i) => {
 		const c = hRow.getCell(i + 1);
 		c.value = h;
-		c.font = { name: FONT, bold: true, size: 11 };
-		c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD9E2F3' } };
+		c.font = { name: FONT, bold: true, size: 10 };
+		c.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: COLORS.GREEN } };
 		c.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
 	});
 
@@ -314,7 +420,7 @@ function addSummarySheet(workbook: any, slots: SlotData[], month: string): void 
 	}
 
 	let sr = 2;
-	for (const [, data] of empData) {
+	empData.forEach((data) => {
 		const r = ws.getRow(sr);
 		r.getCell(1).value = data.name;
 		r.getCell(2).value = data.name;
@@ -324,11 +430,11 @@ function addSummarySheet(workbook: any, slots: SlotData[], month: string): void 
 		r.getCell(6).value = data.maxHours;
 		r.getCell(7).value = data.maxHours > 0 ? Math.round((data.hours / data.maxHours) * 100) / 100 : 0;
 		for (let c = 1; c <= 7; c++) {
-			r.getCell(c).font = { name: FONT, size: 11 };
+			r.getCell(c).font = { name: FONT, size: 10 };
 			r.getCell(c).border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
 		}
 		sr++;
-	}
+	});
 
 	[12, 28, 12, 8, 14, 12, 14].forEach((w, i) => ws.getColumn(i + 1).width = w);
 }
