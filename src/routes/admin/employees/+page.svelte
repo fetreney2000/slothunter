@@ -9,6 +9,11 @@
 	let showAddForm = $state(false);
 	let filterDept = $state('all');
 	let filterActive = $state('true');
+	let editingEmp = $state<Record<string, unknown> | null>(null);
+	let editForm = $state({
+		name: '', dept: 'OPD', role: 'PPF', email: '', maxHoursPerMonth: 56,
+		salary: 0, annualAE: 0, annualHalfPaidAE: 0, annualPaidAE: 0, annualPHAE: 0, annualPH: 0
+	});
 
 	// New employee form
 	let newEmp = $state({
@@ -87,6 +92,46 @@
 			}
 		} catch (err) {
 			error = 'Ralat rangkaian';
+		}
+	}
+
+	function startEdit(emp: Record<string, unknown>) {
+		editingEmp = emp;
+		editForm = {
+			name: emp.name as string,
+			dept: emp.dept as string,
+			role: emp.role as string,
+			email: emp.email as string,
+			maxHoursPerMonth: emp.maxHoursPerMonth as number,
+			salary: emp.salary as number,
+			annualAE: emp.annualAE as number,
+			annualHalfPaidAE: emp.annualHalfPaidAE as number,
+			annualPaidAE: emp.annualPaidAE as number,
+			annualPHAE: emp.annualPHAE as number,
+			annualPH: emp.annualPH as number
+		};
+	}
+
+	async function saveEdit() {
+		if (!editingEmp) return;
+		try {
+			const res = await fetch('/api/admin/employees', {
+				method: 'PUT',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					employeeId: editingEmp.employeeId,
+					...editForm
+				})
+			});
+			if (res.ok) {
+				editingEmp = null;
+				await loadEmployees();
+			} else {
+				const d = await res.json();
+				error = d.error || 'Gagal mengemaskini';
+			}
+		} catch (err) {
+			error = 'Ralat mengemaskini';
 		}
 	}
 
@@ -211,6 +256,9 @@
 							</p>
 						</div>
 						<div class="flex gap-1 shrink-0">
+							<button class="btn btn-sm preset-tonal-primary" onclick={() => startEdit(emp)}>
+								Edit
+							</button>
 							<button
 								class="btn btn-sm {emp.active ? 'preset-tonal-error' : 'preset-tonal-success'}"
 								onclick={() => toggleActive(emp)}
@@ -224,3 +272,33 @@
 		</div>
 	{/if}
 </div>
+
+<!-- Edit Modal -->
+{#if editingEmp}
+	<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4" onclick={() => (editingEmp = null)}>
+		<div class="card preset-filled-surface-100-800-token p-6 w-full max-w-lg space-y-4 max-h-[90vh] overflow-y-auto" onclick={(e) => e.stopPropagation()}>
+			<h3 class="h4">Edit: {editingEmp.name} ({editingEmp.employeeId})</h3>
+			<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+				<label class="label"><span>Nama</span><input class="input" bind:value={editForm.name} /></label>
+				<label class="label"><span>Email</span><input class="input" type="email" bind:value={editForm.email} /></label>
+				<label class="label"><span>Jabatan</span>
+					<select class="select" bind:value={editForm.dept}><option value="IPP">IPP</option><option value="OPD">OPD</option></select>
+				</label>
+				<label class="label"><span>Peranan</span>
+					<select class="select" bind:value={editForm.role}><option value="PPF">PPF</option><option value="PRA">PRA</option></select>
+				</label>
+				<label class="label"><span>Jam Maks/bulan</span><input class="input" type="number" bind:value={editForm.maxHoursPerMonth} /></label>
+				<label class="label"><span>Gaji (RM)</span><input class="input" type="number" bind:value={editForm.salary} /></label>
+				<label class="label"><span>AE Tahunan</span><input class="input" type="number" bind:value={editForm.annualAE} /></label>
+				<label class="label"><span>AE Separuh Gaji</span><input class="input" type="number" bind:value={editForm.annualHalfPaidAE} /></label>
+				<label class="label"><span>AE Bergaji</span><input class="input" type="number" bind:value={editForm.annualPaidAE} /></label>
+				<label class="label"><span>PH AE</span><input class="input" type="number" bind:value={editForm.annualPHAE} /></label>
+				<label class="label"><span>Cuti Umum</span><input class="input" type="number" bind:value={editForm.annualPH} /></label>
+			</div>
+			<div class="flex gap-2 justify-end">
+				<button class="btn preset-tonal-surface" onclick={() => (editingEmp = null)}>Batal</button>
+				<button class="btn preset-filled-primary-500" onclick={saveEdit}>Simpan</button>
+			</div>
+		</div>
+	</div>
+{/if}
