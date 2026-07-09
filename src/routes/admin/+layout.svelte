@@ -54,17 +54,19 @@
 	<!-- Main content area -->
 	<div class="flex-1 flex flex-col min-w-0">
 		<!-- Top bar (mobile + desktop) -->
-		<AppBar background="bg-surface-100-900" border="border-b border-surface-300-700">
-			{#snippet lead()}
-				<button class="btn-icon preset-ghost md:hidden" onclick={() => (mobileMenuOpen = !mobileMenuOpen)}>
-					<span class="text-xl">☰</span>
-				</button>
-				<span class="ml-2 text-lg font-bold md:hidden">🦥 Admin</span>
-			{/snippet}
-			{#snippet trail()}
-				<span class="text-sm opacity-60 hidden sm:block">{data.user?.name}</span>
-				<button class="btn preset-tonal-surface btn-sm hidden md:inline-flex" onclick={handleLogout}>Keluar</button>
-			{/snippet}
+		<AppBar class="bg-surface-100-900 border-b border-surface-300-700">
+			<AppBar.Toolbar>
+				<AppBar.Lead>
+					<button class="btn-icon preset-ghost md:hidden" onclick={() => (mobileMenuOpen = !mobileMenuOpen)}>
+						<span class="text-xl">☰</span>
+					</button>
+					<span class="ml-2 text-lg font-bold md:hidden">🦥 Admin</span>
+				</AppBar.Lead>
+				<AppBar.Trail>
+					<span class="text-sm opacity-60 hidden sm:block">{data.user?.name}</span>
+					<button class="btn preset-tonal-surface btn-sm hidden md:inline-flex" onclick={handleLogout}>Keluar</button>
+				</AppBar.Trail>
+			</AppBar.Toolbar>
 		</AppBar>
 
 		<!-- Mobile dropdown menu -->

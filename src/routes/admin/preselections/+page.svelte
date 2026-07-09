@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import DatePicker from '$lib/components/DatePicker.svelte';
 	let { data }: { data: PageData } = $props();
 
 	let month = $state(new Date().toISOString().slice(0, 7) + '-01');
@@ -58,7 +59,7 @@
 	<div class="card preset-tonal p-4 space-y-3">
 		<h3 class="h4">Tambah Pra-Pilihan</h3>
 		<div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-			<input type="date" class="input" bind:value={newDate} />
+			<DatePicker bind:value={newDate} />
 			<select class="select" bind:value={newSlot}>
 				{#each slotTypes as s}<option value={s}>{s}</option>{/each}
 			</select>

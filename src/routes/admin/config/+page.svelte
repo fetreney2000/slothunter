@@ -1,5 +1,7 @@
 <script lang="ts">
-	let config = $state<Record<string, unknown>>({});
+	import DatePicker from '$lib/components/DatePicker.svelte';
+
+	let config = $state<Record<string, unknown> & { rosterMonth: string }>({ rosterMonth: '' });
 	let loading = $state(true);
 	let saving = $state(false);
 	let message = $state('');
@@ -45,11 +47,6 @@
 		}
 	}
 
-	function formatDateForInput(date: unknown): string {
-		if (!date) return '';
-		const d = new Date(date as string);
-		return d.toISOString().split('T')[0];
-	}
 </script>
 
 <svelte:head>
@@ -86,12 +83,7 @@
 
 			<label class="label">
 				<span>Bulan Roster Aktif</span>
-				<input
-					type="date"
-					class="input"
-					value={formatDateForInput(config.rosterMonth)}
-					onchange={(e) => (config.rosterMonth = (e.target as HTMLInputElement).value)}
-				/>
+				<DatePicker bind:value={config.rosterMonth} />
 			</label>
 
 			<label class="label">

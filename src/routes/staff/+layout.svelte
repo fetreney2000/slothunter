@@ -21,20 +21,21 @@
 </script>
 
 <div class="flex min-h-screen flex-col">
-	<AppBar background="bg-surface-100-900" border="border-b border-surface-300-700">
-		{#snippet lead()}
-			<span class="text-lg font-bold">🦥 Slothunter</span>
-		{/snippet}
-		{#snippet trail()}
-			<!-- Desktop nav links -->
-			<div class="hidden md:flex items-center gap-1">
-				{#each navItems as item}
-					<a href={item.href} class="btn preset-ghost btn-sm text-xs">{item.icon} {item.label}</a>
-				{/each}
-			</div>
-			<span class="text-sm opacity-60 hidden sm:block ml-4">{data.user?.name}</span>
-			<button class="btn preset-tonal-surface btn-sm" onclick={handleLogout}>Keluar</button>
-		{/snippet}
+	<AppBar class="bg-surface-100-900 border-b border-surface-300-700">
+		<AppBar.Toolbar>
+			<AppBar.Lead>
+				<span class="text-lg font-bold">🦥 Slothunter</span>
+			</AppBar.Lead>
+			<AppBar.Trail>
+				<div class="hidden md:flex items-center gap-1">
+					{#each navItems as item}
+						<a href={item.href} class="btn preset-ghost btn-sm text-xs">{item.icon} {item.label}</a>
+					{/each}
+				</div>
+				<span class="text-sm opacity-60 hidden sm:block ml-4">{data.user?.name}</span>
+				<button class="btn preset-tonal-surface btn-sm" onclick={handleLogout}>Keluar</button>
+			</AppBar.Trail>
+		</AppBar.Toolbar>
 	</AppBar>
 
 	<main class="flex-1 p-4 md:p-6 lg:p-8 pb-24 md:pb-8 max-w-5xl w-full mx-auto">

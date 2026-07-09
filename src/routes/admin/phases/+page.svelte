@@ -1,4 +1,6 @@
 <script lang="ts">
+	import DatePicker from '$lib/components/DatePicker.svelte';
+
 	let month = $state(new Date().toISOString().slice(0, 7) + '-01');
 	let phases = $state([
 		{ phase: 1, startDate: '', endDate: '', weekendSlots: 1, weekdaySlots: 2 },
@@ -64,11 +66,11 @@
 					<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
 						<label class="label">
 							<span>Mula</span>
-							<input type="date" class="input" bind:value={phase.startDate} />
+							<DatePicker bind:value={phase.startDate} />
 						</label>
 						<label class="label">
 							<span>Tamat</span>
-							<input type="date" class="input" bind:value={phase.endDate} />
+							<DatePicker bind:value={phase.endDate} />
 						</label>
 						<label class="label">
 							<span>Slot Hujung Minggu</span>

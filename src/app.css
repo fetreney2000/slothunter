@@ -1,7 +1,7 @@
 @import 'tailwindcss';
-@import '@skeletonlabs/skeleton/themes/hamlindigo';
 @import '@skeletonlabs/skeleton';
-@import '@skeletonlabs/skeleton/optional/presets';
+@import '@skeletonlabs/skeleton-svelte';
+@import '@skeletonlabs/skeleton/themes/hamlindigo';
 
 @theme {
 	--font-sans: 'Inter', system-ui, -apple-system, sans-serif;

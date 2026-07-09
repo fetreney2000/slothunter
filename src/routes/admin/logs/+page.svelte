@@ -1,4 +1,6 @@
 <script lang="ts">
+	import DatePicker from '$lib/components/DatePicker.svelte';
+
 	let logs = $state<Array<Record<string, unknown>>>([]);
 	let loading = $state(true);
 	let filterDate = $state('');
@@ -24,7 +26,7 @@
 	<h1 class="h2">Log Audit</h1>
 
 	<div class="flex gap-2">
-		<input type="date" class="input" bind:value={filterDate} onchange={() => loadLogs()} />
+		<DatePicker bind:value={filterDate} onchange={() => loadLogs()} />
 		{#if filterDate}
 			<button class="btn preset-tonal-surface" onclick={() => { filterDate = ''; }}>Semua</button>
 		{/if}

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import DatePicker from '$lib/components/DatePicker.svelte';
+
 	let month = $state(new Date().toISOString().slice(0, 7) + '-01');
 	let running = $state(false);
 	let progress = $state(0);
@@ -92,7 +94,9 @@
 	<!-- Controls -->
 	<div class="card preset-tonal p-4 space-y-3">
 		<div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
-			<label class="label"><span>Bulan</span><input type="date" class="input" bind:value={month} /></label>
+			<label class="label"><span>Bulan</span>
+				<DatePicker bind:value={month} />
+			</label>
 			<label class="label"><span>Mod Solver</span>
 				<select class="select" bind:value={solverMode}>
 					<option value="all">Semua Slot</option>

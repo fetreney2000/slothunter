@@ -1,5 +1,6 @@
 <script lang="ts">
 	import ConfirmModal from '$lib/components/ConfirmModal.svelte';
+	import DatePicker from '$lib/components/DatePicker.svelte';
 
 	let holidays = $state<Array<{ date: string; name: string }>>([]);
 	let loading = $state(true);
@@ -90,7 +91,7 @@
 		<div class="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
 			<label class="label">
 				<span>Tarikh</span>
-				<input type="date" class="input" bind:value={newDate} />
+				<DatePicker bind:value={newDate} />
 			</label>
 			<label class="label">
 				<span>Nama Cuti</span>
