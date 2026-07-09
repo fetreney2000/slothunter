@@ -57,14 +57,14 @@
 ## ❌ NOT IMPLEMENTED — MEDIUM PRIORITY
 
 - [x] **Solver Strategy B (Beam Search)** — Proper beam search with width=50, TOP_K=3, objective pruning
-- [ ] **Skeleton DataTable** — Replace HTML tables with Skeleton DataTable component for staff management and logs
-- [ ] **Skeleton Modal confirmations** — Use Skeleton Modal component for delete/critical action confirmations
-- [ ] **Excel Column Width Precision** — Fine-tune column widths to exactly match template
+- [x] **Skeleton DataTable** — N/A: Skeleton v3 does not include DataTable component. HTML tables used.
+- [x] **Skeleton Modal confirmations** — `ConfirmModal.svelte` component using Skeleton Modal, used in holidays page
+- [x] **Excel Column Width Precision** — Per-column widths set: TAR(5), HARI(12), slots(11), AE(10), POST-AE(10)
 
 ---
 
 ## ❌ NOT IMPLEMENTED — LOW PRIORITY
 
 - [x] **Solver Strategy C (Fallback)** — 6 sub-strategies: weekend-first, OPD-first, AE-first, PP-first, middle-out, random
-- [ ] **Skeleton Calendar Component** — Replace custom grid with Skeleton Calendar for unavailability
-- [ ] **Data Density** — Use DataTable for denser admin views
+- [x] **Skeleton Calendar Component** — N/A: Skeleton v3 does not include Calendar component. Custom grid used.
+- [x] **Data Density** — HTML tables with compact styling used throughout (functionally equivalent)

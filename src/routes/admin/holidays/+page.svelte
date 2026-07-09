@@ -1,9 +1,13 @@
 <script lang="ts">
+	import ConfirmModal from '$lib/components/ConfirmModal.svelte';
+
 	let holidays = $state<Array<{ date: string; name: string }>>([]);
 	let loading = $state(true);
 	let newDate = $state('');
 	let newName = $state('');
 	let error = $state('');
+	let confirmOpen = $state(false);
+	let deleteTarget = $state('');
 
 	$effect(() => {
 		loadHolidays();
@@ -48,12 +52,17 @@
 		}
 	}
 
-	async function deleteHoliday(date: string) {
+	function confirmDelete(date: string) {
+		deleteTarget = date;
+		confirmOpen = true;
+	}
+
+	async function doDelete() {
 		try {
 			await fetch('/api/admin/holidays', {
 				method: 'DELETE',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ date })
+				body: JSON.stringify({ date: deleteTarget })
 			});
 			await loadHolidays();
 		} catch (err) {
@@ -108,7 +117,7 @@
 					</div>
 					<button
 						class="btn btn-sm preset-tonal-error"
-						onclick={() => deleteHoliday(h.date)}
+						onclick={() => confirmDelete(h.date)}
 					>
 						Padam
 					</button>
@@ -117,3 +126,5 @@
 		</div>
 	{/if}
 </div>
+
+<ConfirmModal bind:open={confirmOpen} title="Padam Cuti" message="Padam cuti ini?" onConfirm={doDelete} />

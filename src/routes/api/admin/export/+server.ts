@@ -193,12 +193,34 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 		}
 	}
 
-	// Set column widths
-	ws.getColumn(1).width = 6;
-	ws.getColumn(2).width = 14;
-	for (let c = 3; c <= 22; c++) {
-		ws.getColumn(c).width = 12;
-	}
+	// Set column widths to match template
+	ws.getColumn(1).width = 5;   // TARIKH
+	ws.getColumn(2).width = 12;  // HARI
+	// Weekday columns (C-F): OPD_1, OPD_2, OPD_3, IPP_1
+	ws.getColumn(3).width = 11;  // OPD_1
+	ws.getColumn(4).width = 11;  // OPD_2
+	ws.getColumn(5).width = 11;  // OPD_3
+	ws.getColumn(6).width = 11;  // IPP_1
+	// Weekend/holiday columns (G-K): OPD_1-5
+	ws.getColumn(7).width = 11;  // OPD_1
+	ws.getColumn(8).width = 11;  // OPD_2
+	ws.getColumn(9).width = 11;  // OPD_3
+	ws.getColumn(10).width = 11; // OPD_4
+	ws.getColumn(11).width = 11; // OPD_5
+	// IPP columns (L-O): IPP_1-4
+	ws.getColumn(12).width = 11; // IPP_1
+	ws.getColumn(13).width = 11; // IPP_2
+	ws.getColumn(14).width = 11; // IPP_3
+	ws.getColumn(15).width = 11; // IPP_4
+	// Prabungkus (P-R): PP_PPF, PP_PRA_1, PP_PRA_2
+	ws.getColumn(16).width = 11; // PP_PPF
+	ws.getColumn(17).width = 11; // PP_PRA_1
+	ws.getColumn(18).width = 11; // PP_PRA_2
+	// Farmasi Kecemasan (S-V)
+	ws.getColumn(19).width = 10; // 10PM-12AM
+	ws.getColumn(20).width = 10; // AE
+	ws.getColumn(21).width = 10; // 12AM-8AM
+	ws.getColumn(22).width = 10; // POST-AE
 
 	// Summary sheet
 	const summaryWs = workbook.addWorksheet('Summary');
