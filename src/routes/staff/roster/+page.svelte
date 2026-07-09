@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { exportRosterToExcel } from '$lib/exportRoster';
 
 	let { data }: { data: PageData } = $props();
 
@@ -54,17 +55,26 @@
 
 	async function exportExcel() {
 		try {
-			const res = await fetch(`/api/admin/export?month=${month}`);
-			if (!res.ok) { alert('Gagal mengeksport'); return; }
-			const blob = await res.blob();
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = `Jadual_OT_${month.replace(/-/g, '').slice(0, 6)}.xlsx`;
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-			URL.revokeObjectURL(url);
+			if (slots.length === 0) {
+				alert('Tiada data untuk dieksport');
+				return;
+			}
+			const holidayRes = await fetch('/api/admin/holidays');
+			let holidayDates = new Set<string>();
+			if (holidayRes.ok) {
+				const hData = await holidayRes.json();
+				holidayDates = new Set(hData.holidays.map((h: { date: string }) => h.date));
+			}
+			await exportRosterToExcel(
+				month,
+				slots.map(s => ({
+					date: s.date as string,
+					day: s.day as string,
+					slotType: s.slotType as string,
+					employeeName: (s.employeeName as string) || ''
+				})),
+				holidayDates
+			);
 		} catch { alert('Ralat mengeksport'); }
 	}
 </script>

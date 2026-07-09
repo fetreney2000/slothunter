@@ -1,5 +1,6 @@
 <script lang="ts">
 	import DatePicker from '$lib/components/DatePicker.svelte';
+	import { exportRosterToExcel } from '$lib/exportRoster';
 
 	let month = $state(new Date().toISOString().slice(0, 7) + '-01');
 	let running = $state(false);
@@ -83,22 +84,27 @@
 
 	async function exportExcel() {
 		try {
-			const res = await fetch(`/api/admin/export?month=${month}`);
-			if (!res.ok) {
-				const text = await res.text();
-				alert('Gagal mengeksport: ' + (text || res.statusText));
+			if (slots.length === 0) {
+				alert('Tiada data untuk dieksport');
 				return;
 			}
-			const blob = await res.blob();
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			const monthStr = month.replace(/-/g, '').slice(0, 6);
-			a.download = `Jadual_OT_${monthStr}.xlsx`;
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-			URL.revokeObjectURL(url);
+			// Fetch holidays client-side
+			const holidayRes = await fetch('/api/admin/holidays');
+			let holidayDates = new Set<string>();
+			if (holidayRes.ok) {
+				const hData = await holidayRes.json();
+				holidayDates = new Set(hData.holidays.map((h: { date: string }) => h.date));
+			}
+			await exportRosterToExcel(
+				month,
+				slots.map(s => ({
+					date: s.date as string,
+					day: s.day as string,
+					slotType: s.slotType as string,
+					employeeName: (s.employeeName as string) || ''
+				})),
+				holidayDates
+			);
 		} catch (err) {
 			alert('Ralat mengeksport: ' + (err instanceof Error ? err.message : 'Unknown'));
 		}
