@@ -3,8 +3,6 @@
  * Uses exceljs in the browser to generate an .xlsx matching the official template.
  * Runs entirely client-side — no server endpoint needed.
  */
-import ExcelJS from 'exceljs';
-
 const FONT = 'Arial Narrow';
 
 export interface SlotData {
@@ -19,6 +17,8 @@ export async function exportRosterToExcel(
 	slots: SlotData[],
 	holidayDates: Set<string>
 ): Promise<void> {
+	// Dynamic import — exceljs browser build needs runtime resolution
+	const ExcelJS = await import('exceljs');
 	const workbook = new ExcelJS.Workbook();
 	const ws = workbook.addWorksheet('Roster');
 
@@ -255,7 +255,8 @@ export async function exportRosterToExcel(
 
 // ─── HELPERS ────────────────────────────────────────────────────
 
-function styleHeaderRow(row: ExcelJS.Row): void {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function styleHeaderRow(row: any): void {
 	for (let c = 1; c <= 22; c++) {
 		const cell = row.getCell(c);
 		cell.font = { name: FONT, bold: true, size: 19 };
@@ -270,7 +271,8 @@ function styleHeaderRow(row: ExcelJS.Row): void {
 	}
 }
 
-function addFooterRow(ws: ExcelJS.Worksheet, r: number, left: string, right: string, bold = false, italic = false): void {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function addFooterRow(ws: any, r: number, left: string, right: string, bold = false, italic = false): void {
 	const row = ws.getRow(r);
 	row.getCell(1).value = left;
 	row.getCell(20).value = right;
@@ -281,7 +283,8 @@ function addFooterRow(ws: ExcelJS.Worksheet, r: number, left: string, right: str
 	row.height = 20;
 }
 
-function addSummarySheet(workbook: ExcelJS.Workbook, slots: SlotData[], month: string): void {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function addSummarySheet(workbook: any, slots: SlotData[], month: string): void {
 	const ws = workbook.addWorksheet('Summary');
 	const headers = ['EmployeeID', 'Name', 'Department', 'Role', 'Total Hours', 'Max Hours', '% Utilization'];
 	const hRow = ws.getRow(1);

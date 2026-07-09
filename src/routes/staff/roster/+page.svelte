@@ -59,11 +59,9 @@
 				alert('Tiada data untuk dieksport');
 				return;
 			}
-			const holidayRes = await fetch('/api/admin/holidays');
-			let holidayDates = new Set<string>();
-			if (holidayRes.ok) {
-				const hData = await holidayRes.json();
-				holidayDates = new Set(hData.holidays.map((h: { date: string }) => h.date));
+			const holidayDates = new Set<string>();
+			for (const s of slots) {
+				if (s.day === 'CUTI UMUM') holidayDates.add(s.date as string);
 			}
 			await exportRosterToExcel(
 				month,
