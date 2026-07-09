@@ -81,8 +81,27 @@
 		if (res.ok) { alert('Copy roster berjaya dibuat!'); }
 	}
 
-	function exportExcel() {
-		window.open(`/api/admin/export?month=${month}`, '_blank');
+	async function exportExcel() {
+		try {
+			const res = await fetch(`/api/admin/export?month=${month}`);
+			if (!res.ok) {
+				const text = await res.text();
+				alert('Gagal mengeksport: ' + (text || res.statusText));
+				return;
+			}
+			const blob = await res.blob();
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			const monthStr = month.replace(/-/g, '').slice(0, 6);
+			a.download = `Jadual_OT_${monthStr}.xlsx`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+		} catch (err) {
+			alert('Ralat mengeksport: ' + (err instanceof Error ? err.message : 'Unknown'));
+		}
 	}
 </script>
 

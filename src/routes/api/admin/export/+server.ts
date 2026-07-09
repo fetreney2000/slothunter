@@ -1,4 +1,5 @@
 import type { RequestHandler } from './$types';
+import ExcelJS from 'exceljs';
 import { connectDB } from '$lib/server/db';
 import { Roster, RosterSlot, User, Holiday } from '$lib/server/models';
 
@@ -7,7 +8,6 @@ export const GET: RequestHandler = async ({ locals, url }) => {
 		return new Response('Unauthorized', { status: 401 });
 	}
 
-	const ExcelJS = await import('exceljs');
 	const workbook = new ExcelJS.Workbook();
 
 	await connectDB();

@@ -51,6 +51,22 @@
 	);
 
 	const myTotalHours = $derived(mySlots.reduce((sum, s) => sum + (s.hours as number), 0));
+
+	async function exportExcel() {
+		try {
+			const res = await fetch(`/api/admin/export?month=${month}`);
+			if (!res.ok) { alert('Gagal mengeksport'); return; }
+			const blob = await res.blob();
+			const url = URL.createObjectURL(blob);
+			const a = document.createElement('a');
+			a.href = url;
+			a.download = `Jadual_OT_${month.replace(/-/g, '').slice(0, 6)}.xlsx`;
+			document.body.appendChild(a);
+			a.click();
+			document.body.removeChild(a);
+			URL.revokeObjectURL(url);
+		} catch { alert('Ralat mengeksport'); }
+	}
 </script>
 
 <svelte:head>
@@ -71,7 +87,7 @@
 				<option value={new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 7) + '-01'}>Bulan Lepas</option>
 			</select>
 			{#if slots.length > 0}
-				<a href="/api/admin/export?month={month}" target="_blank" class="btn preset-filled-success-500 btn-sm">📥 Excel</a>
+				<button class="btn preset-filled-success-500 btn-sm" onclick={exportExcel}>📥 Excel</button>
 			{/if}
 		</div>
 	</div>
