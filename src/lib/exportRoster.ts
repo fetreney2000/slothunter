@@ -200,49 +200,8 @@ export async function exportRosterToExcel(
 	styleCell(row4.getCell(22), { bold: true, fill: COLORS.SALMON });
 	row4.height = 45;
 
-	// ─── ROW 5: SLOT TYPE LABELS ─────────────────────────────────
-	const row5 = ws.getRow(5);
-	// C5:E5: OPD_1, OPD_2, OPD_3 (YELLOW)
-	const opdLabelsBE = ['OPD_1', 'OPD_2', 'OPD_3'];
-	for (let i = 0; i < 3; i++) {
-		row5.getCell(3 + i).value = opdLabelsBE[i];
-		styleCell(row5.getCell(3 + i), { bold: true, fill: COLORS.YELLOW });
-	}
-	// F5: IPP_1 (ORANGE)
-	row5.getCell(6).value = 'IPP_1';
-	styleCell(row5.getCell(6), { bold: true, fill: COLORS.ORANGE });
-	// G5:K5: OPD_1-OPD_5 (YELLOW)
-	const opdLabelsRH = ['OPD_1', 'OPD_2', 'OPD_3', 'OPD_4', 'OPD_5'];
-	for (let i = 0; i < 5; i++) {
-		row5.getCell(7 + i).value = opdLabelsRH[i];
-		styleCell(row5.getCell(7 + i), { bold: true, fill: COLORS.YELLOW });
-	}
-	// L5:O5: IPP_1-IPP_4 (ORANGE)
-	const ippLabels = ['IPP_1', 'IPP_2', 'IPP_3', 'IPP_4'];
-	for (let i = 0; i < 4; i++) {
-		row5.getCell(12 + i).value = ippLabels[i];
-		styleCell(row5.getCell(12 + i), { bold: true, fill: COLORS.ORANGE });
-	}
-	// P5:R5: PP_PPF, PP_PRA_1, PP_PRA_2 (BLUE)
-	const ppLabels = ['PP_PPF', 'PP_PRA_1', 'PP_PRA_2'];
-	for (let i = 0; i < 3; i++) {
-		row5.getCell(16 + i).value = ppLabels[i];
-		styleCell(row5.getCell(16 + i), { bold: true, fill: COLORS.BLUE });
-	}
-	// S5: empty (SALMON)
-	styleCell(row5.getCell(19), { fill: COLORS.SALMON });
-	// T5: AE (LIGHT GREEN)
-	row5.getCell(20).value = 'AE';
-	styleCell(row5.getCell(20), { bold: true, fill: COLORS.LIGHT_GREEN });
-	// U5: empty (SALMON)
-	styleCell(row5.getCell(21), { fill: COLORS.SALMON });
-	// V5: POST-AE (LIGHT GREEN)
-	row5.getCell(22).value = 'POST-AE';
-	styleCell(row5.getCell(22), { bold: true, fill: COLORS.LIGHT_GREEN });
-	row5.height = 25;
-
-	// ─── DATA ROWS (starting row 6) ──────────────────────────────
-	let rowNum = 6;
+	// ─── DATA ROWS (starting row 5) ──────────────────────────────
+	let rowNum = 5;
 	for (const date of dates) {
 		const dow = new Date(date + 'T00:00:00').getDay();
 		const isHoliday = holidayDates.has(date);
